@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "fr.epechassieu.carnetdechant"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "fr.epechassieu.carnetdechant"
