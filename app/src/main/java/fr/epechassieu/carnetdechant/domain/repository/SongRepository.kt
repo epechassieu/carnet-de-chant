@@ -20,4 +20,6 @@ interface SongRepository {
     suspend fun isDatabaseEmpty(): Boolean
 
     suspend fun loadSongsFromJson()
+
+    suspend fun getCategoriesWithCount(): Map<Category, Int>
 }
