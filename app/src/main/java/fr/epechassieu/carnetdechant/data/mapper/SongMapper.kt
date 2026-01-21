@@ -45,11 +45,11 @@ fun Song.toEntity(): SongEntity {
 fun SongDto.toEntity(): SongEntity {
     return SongEntity(
         id = id,
-        songbook = songbook,
-        number = number,
-        title = title,
+        songbook = recueil,
+        number = numero,
+        title = titre,
         categories = categories.joinToString(","),
-        lyrics = lyrics,
-        urlMedia = urlMedia
+        lyrics = paroles,
+        urlMedia = urlmedia
     )
 }

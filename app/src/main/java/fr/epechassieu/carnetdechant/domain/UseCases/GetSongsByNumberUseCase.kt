@@ -5,10 +5,10 @@ import fr.epechassieu.carnetdechant.domain.repository.SongRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetSongsByIdUseCase @Inject constructor(
+class GetSongsByNumberUseCase @Inject constructor(
     private val songRepository: SongRepository
 ) {
     operator fun invoke(): Flow<List<Song>> {
-        return songRepository.getSongsById()
+        return songRepository.getSongsByNumber()
     }
 }

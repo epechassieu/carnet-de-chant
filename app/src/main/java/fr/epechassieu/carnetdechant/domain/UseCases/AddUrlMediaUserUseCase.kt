@@ -8,6 +8,6 @@ class AddUrlMediaUserUseCase @Inject constructor(
     private val urlMediaUserRepository: UrlMediaUserRepository
 ) {
     suspend operator fun invoke(urlMediaUser: UrlMediaUser) {
-        urlMediaUserRepository.addUrlMedia(urlMediaUser)
+        urlMediaUserRepository.addUrlMediaUser(urlMediaUser)
     }
 }

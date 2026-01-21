@@ -9,6 +9,6 @@ class GetSongByIdUseCase @Inject constructor(
     private val songRepository: SongRepository
 ) {
     operator fun invoke(id:String): Flow<Song?> {
-        return songRepository.getSongsById(id)
+        return songRepository.getSongById(id)
     }
 }

@@ -3,7 +3,7 @@ package fr.epechassieu.carnetdechant.data.repository
 import fr.epechassieu.carnetdechant.data.database.dao.SongDao
 import fr.epechassieu.carnetdechant.data.mapper.toDomain
 import fr.epechassieu.carnetdechant.data.mapper.toEntity
-import fr.epechassieu.carnetdechant.data.remote.api.SongApiService
+import fr.epechassieu.carnetdechant.data.remote.SongApiService
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.domain.repository.SongRepository
@@ -28,8 +28,8 @@ class SongRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getSongsById(): Flow<List<Song>> {
-        return songDao.getSongsById().map { entities ->
+    override fun getSongsByNumber(): Flow<List<Song>> {
+        return songDao.getSongsByNumber().map { entities ->
             entities.map { it.toDomain() }
         }
     }
@@ -60,5 +60,20 @@ class SongRepositoryImpl @Inject constructor(
         val response = songApiService.getSongs()
         val entities = response.chants.map { it.toEntity() }
         songDao.insertAll(entities)
+    }
+
+    override suspend fun getCategoriesWithCount(): Map<Category, Int> {
+        return songDao.getAllCategoriesRaw()
+            .flatMap { it.split(",") }
+            .filter { it.isNotBlank() }
+            .mapNotNull { categoryName ->
+                try {
+                    Category.valueOf(categoryName)
+                } catch (e: IllegalArgumentException) {
+                    null
+                }
+            }
+            .groupingBy { it }
+            .eachCount()
     }
 }

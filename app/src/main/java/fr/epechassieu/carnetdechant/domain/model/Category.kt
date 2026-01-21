@@ -25,5 +25,7 @@ enum class Category(val libelle: String) {
     SAINT_ESPRIT("Saint-Esprit"),
     SAINTE_CENE("Sainte Cène"),
     SALUT("Salut"),
-    UNITE("Unité")
+    UNITE("Unité"),
+    INCONNU("Inconnu")
+
 }

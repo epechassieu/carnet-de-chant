@@ -15,22 +15,22 @@ interface SongDao {
 
     // ascending ranking
 
-    @Query("SELECT * FROM songs ORDER BY title ASC")
+    @Query("SELECT * FROM songs ORDER BY titre ASC")
     fun getSongsByTitle(): Flow<List<SongEntity>>
 
-    @Query("SELECT * FROM songs ORDER BY number ASC")
+    @Query("SELECT * FROM songs ORDER BY numero ASC")
     fun getSongsByNumber(): Flow<List<SongEntity>>
 
     // search by criterias
 
-    @Query("SELECT * FROM songs WHERE title LIKE '%' || :query || '%'")
+    @Query("SELECT * FROM songs WHERE titre LIKE '%' || :query || '%'")
     fun searchSongs(query: String): Flow<List<SongEntity>>
 
     @Query("SELECT * FROM songs WHERE categories LIKE '%' || :category || '%'")
     fun getSongsByCategory(category: String): Flow<List<SongEntity>>
 
     @Query("SELECT * FROM songs WHERE id = :id")
-    fun getSongById(id: String): Flow<SongEntity>
+    fun getSongById(id: String): Flow<SongEntity?>
 
     // Json Update
 

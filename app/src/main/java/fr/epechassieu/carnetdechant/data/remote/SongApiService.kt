@@ -10,7 +10,7 @@ class SongApiService @Inject constructor(
 ) {
 
     companion object {
-        private const val SONGS_URL = "https://raw.githubusercontent.com/epechassieu/chants_eglise/chants.json"
+        private const val SONGS_URL = "https://raw.githubusercontent.com/epechassieu/chants_eglise/main/chants.json"
     }
 
     suspend fun getSongs(): SongsResponseDto {

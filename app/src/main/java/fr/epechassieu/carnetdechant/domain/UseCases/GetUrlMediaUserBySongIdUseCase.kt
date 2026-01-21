@@ -9,6 +9,6 @@ class GetUrlMediaUserBySongIdUseCase @Inject constructor(
     private val urlMediaUserRepository: UrlMediaUserRepository
 ) {
     operator fun invoke(chantId: String): Flow<List<UrlMediaUser>> {
-        return urlMediaUserRepository.getUrlMediaBySongId(chantId)
+        return urlMediaUserRepository.getUrlMediaUserBySongId(chantId)
     }
 }

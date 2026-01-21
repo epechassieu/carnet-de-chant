@@ -13,10 +13,10 @@ data class SongsResponseDto(
 @Serializable
 data class SongDto(
     val id: String,
-    val songbook: String,
-    val number: Int,
-    val title: String,
+    val recueil: String,
+    val numero: Int,
+    val titre: String,
     val categories: List<String>,
-    val lyrics: String,
-    val urlMedia: String? = null
+    val paroles: String,
+    val urlmedia: String? = null
 )
