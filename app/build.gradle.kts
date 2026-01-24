@@ -77,12 +77,12 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
 
-
-
-
     // ViewModel Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // Fonts
+    implementation(libs.androidx.ui.text.google.fonts)
 
     // Tests
     testImplementation(libs.junit)
