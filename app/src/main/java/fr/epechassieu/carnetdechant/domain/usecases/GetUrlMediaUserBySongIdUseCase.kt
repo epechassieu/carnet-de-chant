@@ -1,4 +1,4 @@
-package fr.epechassieu.carnetdechant.domain.UseCases
+package fr.epechassieu.carnetdechant.domain.usecases
 
 import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
 import fr.epechassieu.carnetdechant.domain.repository.UrlMediaUserRepository

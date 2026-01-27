@@ -1,14 +1,14 @@
-package fr.epechassieu.carnetdechant.domain.UseCases
+package fr.epechassieu.carnetdechant.domain.usecases
 
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.domain.repository.SongRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetAllSongsUseCase @Inject constructor(
+class GetSongsByTitleUseCase @Inject constructor(
     private val songRepository: SongRepository
 ) {
     operator fun invoke(): Flow<List<Song>> {
-        return songRepository.getAllSongs()
+        return songRepository.getSongsByTitle()
     }
 }
