@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UrlMediaUserRepository {
 
-    fun getUrlMediaUserBySongId(chantId: String): Flow<List<UrlMediaUser>>
+    fun getUrlMediaUserBySongId(songId: String): Flow<List<UrlMediaUser>>
 
     suspend fun addUrlMediaUser(urlMediaUser: UrlMediaUser)
 
