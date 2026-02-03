@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.epechassieu.carnetdechant.domain.repository.SongRepository
+import fr.epechassieu.carnetdechant.ui.importdata.ImportDataUiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -12,14 +16,17 @@ class ImportDataViewModel @Inject constructor(
     private val songRepository: SongRepository
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow<ImportDataUiState>(ImportDataUiState.Idle)
+    val uiState: StateFlow<ImportDataUiState> = _uiState.asStateFlow()
+
     fun importSongs() {
         viewModelScope.launch {
+            _uiState.value = ImportDataUiState.Loading
             try {
                 songRepository.loadSongsFromJson()
-                // Ici, tu pourrais ajouter un log pour dire "Import lancé"
+                _uiState.value = ImportDataUiState.Success
             } catch (e: Exception) {
-                android.util.Log.e("IMPORTDEBUG","Erreur d'import : ${e.message}",e)
-                e.printStackTrace()
+                _uiState.value = ImportDataUiState.Error(e.message ?: "Erreur inconnue")
             }
         }
     }

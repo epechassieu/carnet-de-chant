@@ -15,6 +15,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +43,16 @@ fun SongListContent(
                 .padding(16.dp),
             placeholder = { Text("Rechercher un chant...") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            trailingIcon = {
+                if (searchQuery.isNotEmpty()) {
+                    IconButton(onClick = { onSearchQueryChange("") }) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "Effacer la recherche"
+                        )
+                    }
+                }
+            },
             singleLine = true,
             shape = RoundedCornerShape(24.dp)
         )
@@ -67,7 +79,10 @@ fun SongListContent(
                         )
                     } else {
                         LazyColumn {
-                            items(state.songs) { song ->
+                            items(
+                                items =state.songs,
+                                key = {it.id} // pour éviter de tout recomposer quand la liste change id et pas position
+                            ) { song ->
                                 SongItem(
                                     song = song,
                                     onClick = { onSongClick(song.id) }

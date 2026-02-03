@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,8 +35,10 @@ import fr.epechassieu.carnetdechant.ui.songlist.SongListViewModel
 
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import fr.epechassieu.carnetdechant.ui.importdata.ImportDataUiState
 import fr.epechassieu.carnetdechant.ui.songdetail.SongDetailScreen
 import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListContent
+import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,7 +134,7 @@ fun MainScreen() {
 
             // Filtre par catégorie
             composable(Routes.FILTER) {
-                SongFilterListContent(
+                SongFilterListScreen(
                     onSongClick = { songId ->
                         navController.navigate(Routes.details(songId))
                     }
@@ -141,12 +144,18 @@ fun MainScreen() {
             // Import
             composable(Routes.IMPORT) {
                 val viewModel: ImportDataViewModel = hiltViewModel()
+                val importState by viewModel.uiState.collectAsState()
 
-                ImportScreen(
-                    onImportClick = {
-                        viewModel.importSongs()
+                // Navigation automatique après succès
+                LaunchedEffect(importState) {
+                    if (importState is ImportDataUiState.Success) {
                         navController.navigate(Routes.LIST)
                     }
+                }
+
+                ImportScreen(
+                    importState = importState,
+                    onImportClick = { viewModel.importSongs() }
                 )
             }
         }

@@ -15,8 +15,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-
-@OptIn (ExperimentalMaterial3Api::class)
 @HiltViewModel
 class SongFilterViewModel @Inject constructor(
     private val getSongsByCategoryUseCase: GetSongsByCategoryUseCase
@@ -26,23 +24,25 @@ class SongFilterViewModel @Inject constructor(
 
     val uiState: StateFlow<SongFilterUiState> = _selectedCategory
         .flatMapLatest { category ->
-        if (category == null) {
-            flowOf(SongFilterUiState(selectedCategory = null, filteredSongs = emptyList()))
-        } else {
-            getSongsByCategoryUseCase(category).map({ songs ->
-                SongFilterUiState(selectedCategory = category, filteredSongs = songs)
-            })
+            if (category == null) {
+                flowOf(SongFilterUiState())
+            } else {
+                getSongsByCategoryUseCase(category).map { songs ->
+                    SongFilterUiState(selectedCategory = category, filteredSongs = songs)
+                }
+            }
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = SongFilterUiState()
-    )
-            fun selectCategory(category: Category) {
-                _selectedCategory.value = category
-            }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = SongFilterUiState()
+        )
 
-            fun clearSelection() {
-                _selectedCategory.value = null
-            }
+    fun selectCategory(category: Category) {
+        _selectedCategory.value = category
+    }
+
+    fun clearSelection() {
+        _selectedCategory.value = null
+    }
 }

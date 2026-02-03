@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ImportScreen(
+    importState: ImportDataUiState,
     onImportClick: () -> Unit
 ) {
     Column(
@@ -61,13 +63,31 @@ fun ImportScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(
-            onClick = onImportClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(Icons.Default.Download, contentDescription = null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("J'accepte et je télécharge")
+        when (importState) {
+            is ImportDataUiState.Loading -> {
+                CircularProgressIndicator()
+            }
+            is ImportDataUiState.Error -> {
+                Text(
+                    text = "Erreur : ${importState.message}",
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = onImportClick) {
+                    Text("Réessayer")
+                }
+            }
+            else -> {
+                Button(
+                    onClick = onImportClick,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Default.Download, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("J'accepte et je télécharge")
+                }
+            }
         }
     }
 }
@@ -75,5 +95,8 @@ fun ImportScreen(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun ImportScreenPreview() {
-    ImportScreen(onImportClick = {})
+    ImportScreen(
+        importState = ImportDataUiState.Idle,
+        onImportClick = {}
+    )
 }

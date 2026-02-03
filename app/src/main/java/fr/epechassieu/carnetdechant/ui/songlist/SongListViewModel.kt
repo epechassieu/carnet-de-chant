@@ -3,6 +3,7 @@ package fr.epechassieu.carnetdechant.ui.songlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.domain.usecases.GetAllSongsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,22 +24,12 @@ class SongListViewModel @Inject constructor(
     val searchQuery = _searchQuery.asStateFlow()
 
     // 2. L'État UI combiné (Liste + Recherche)
-    val uiState: StateFlow<SongListUiState> = combine(
+    val uiState: StateFlow<SongListUiState> = combine<List<Song>, String,
+            SongListUiState>(
         getAllSongsUseCase(),
         _searchQuery
     ) { songs, query ->
-        if (query.isBlank()) {
-            SongListUiState.Success(songs)
-        } else {
-            val filtered = songs.filter {
-                it.title.contains(query, ignoreCase = true) ||
-                        it.lyrics.contains(query, ignoreCase = true)
-            }
-            SongListUiState.Success(filtered)
-        }
-                // LE FIX IMPORTANT POUR KSP :
-                // On force le type de retour du bloc combine
-                as SongListUiState
+        SongListUiState.Success(filterSongs(songs, query))
     }
         .catch { error ->
             emit(SongListUiState.Error(error.message ?: "Erreur inconnue"))
@@ -52,5 +43,13 @@ class SongListViewModel @Inject constructor(
     // Action pour modifier la recherche
     fun onSearchQueryChange(query: String) {
         _searchQuery.value = query
+    }
+
+    private fun filterSongs(songs: List<Song>, query: String): List<Song> {
+        if (query.isBlank()) return songs
+        return songs.filter {
+            it.title.contains(query, ignoreCase = true) ||
+                    it.lyrics.contains(query, ignoreCase = true)
+        }
     }
 }

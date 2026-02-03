@@ -35,33 +35,45 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import fr.epechassieu.carnetdechant.domain.model.Category
+import fr.epechassieu.carnetdechant.domain.model.Song
+import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
+import javax.annotation.meta.When
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongDetailScreen(
     onBackClick: () -> Unit,
     viewModel: SongDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    SongDetailContent(
+        uiState = uiState,
+        onBackClick = onBackClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SongDetailContent(
+    uiState: SongDetailUiState,
+    onBackClick: () -> Unit,
+) {
     val uriHandler = LocalUriHandler.current
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    val titleText =
-                        if (uiState is SongDetailUiState.Success) (uiState as SongDetailUiState.Success).song.title else "Chargement..."
                     Text(
-                        titleText,
+                        text = when (uiState) {
+                            is SongDetailUiState.Success -> uiState.song.title
+                            else -> "Chargement..."
+                        },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
-                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -149,8 +161,21 @@ fun SongDetailScreen(
 
 @Preview(showBackground = true, device = "id:pixel_9")
 @Composable
-fun SongDetailScreenPreview() {
-    SongDetailScreen(
-        onBackClick = {}
+fun SongDetailContentPreview() {
+    val fakeSong = Song(
+        id = "1",
+        songbook = "JEM",
+        number = 100,
+        title = "Dieu est grand",
+        categories = listOf(Category.LOUANGE),
+        lyrics = "Couplet 1\nDieu est grand...\n\n[Refrain]\nAlléluia...",
+        urlMedia = "https://youtube.com/watch?v=123"
     )
+
+    CarnetDeChantTheme {
+        SongDetailContent(
+            uiState = SongDetailUiState.Success(fakeSong),
+            onBackClick = {}
+        )
+    }
 }
