@@ -31,72 +31,80 @@ import fr.epechassieu.carnetdechant.ui.importdata.ImportDataViewModel
 import fr.epechassieu.carnetdechant.ui.importdata.ImportScreen
 import fr.epechassieu.carnetdechant.ui.songlist.SongListContent
 import fr.epechassieu.carnetdechant.ui.songlist.SongListViewModel
+
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import fr.epechassieu.carnetdechant.ui.songdetail.SongDetailScreen
+import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-
-    // Permet de savoir sur quel écran on est pour colorer le bouton du bas
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    // Écrans qui affichent la TopAppBar
+    val showBars = currentRoute in listOf(Routes.LIST, Routes.IMPORT)
+
     Scaffold(
-        // 1. La Barre du Haut (Titre)
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Carnet de Chant") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            if (showBars) {
+                CenterAlignedTopAppBar(
+                    title = { Text("Carnet de Chant") },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 )
-            )
+            }
         },
-        // 2. La Barre du Bas (Menu)
         bottomBar = {
+            // BottomBar toujours visible
             NavigationBar {
-                // Onglet LISTE
                 NavigationBarItem(
                     icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Liste") },
                     label = { Text("Chants") },
-                    selected = currentRoute == "list",
+                    selected = currentRoute == Routes.LIST,
                     onClick = {
-                        navController.navigate("list") {
-                            // Évite d'empiler les écrans si on clique plusieurs fois
-                            popUpTo("list") { inclusive = true }
+                        navController.navigate(Routes.LIST) {
+                            popUpTo(Routes.LIST) { inclusive = true }
+                            launchSingleTop = true
                         }
                     }
                 )
-                // Onglet FILTRE (Vide pour l'instant)
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.FilterAlt, contentDescription = "Filtres") },
                     label = { Text("Filtres") },
-                    selected = currentRoute == "filter",
-                    onClick = { navController.navigate("filter") }
+                    selected = currentRoute == Routes.FILTER,
+                    onClick = {
+                        navController.navigate(Routes.FILTER) {
+                            popUpTo(Routes.LIST)
+                            launchSingleTop = true
+                        }
+                    }
                 )
-                // Onglet IMPORT
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.Download, contentDescription = "Import") },
                     label = { Text("Import") },
-                    selected = currentRoute == "import",
-                    onClick = { navController.navigate("import") }
+                    selected = currentRoute == Routes.IMPORT,
+                    onClick = {
+                        navController.navigate(Routes.IMPORT) {
+                            popUpTo(Routes.LIST)
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
         }
     ) { innerPadding ->
-        // 3. Le Contenu qui change (NavHost)
         NavHost(
             navController = navController,
-            startDestination = "list",
+            startDestination = Routes.LIST,
             modifier = Modifier.padding(innerPadding)
         ) {
-
-            // --- ROUTE  : LA LISTE DES CHANTS ---
-            composable("list") {
-                // Injection du Cerveau "Liste"
+            // Liste des chants
+            composable(Routes.LIST) {
                 val viewModel: SongListViewModel = hiltViewModel()
                 val state by viewModel.uiState.collectAsState()
                 val query by viewModel.searchQuery.collectAsState()
@@ -106,38 +114,38 @@ fun MainScreen() {
                     searchQuery = query,
                     onSearchQueryChange = viewModel::onSearchQueryChange,
                     onSongClick = { songId ->
-                        navController.navigate("details/$songId")
+                        navController.navigate(Routes.details(songId))
                     }
                 )
             }
 
-            // --- ROUTE  : LE DÉTAIL ---
+            // Détail du chant
             composable(
-                "details/{songId}",
+                Routes.DETAILS,
                 arguments = listOf(navArgument("songId") { type = NavType.StringType })
-            ){
+            ) {
                 SongDetailScreen(
                     onBackClick = { navController.popBackStack() }
                 )
             }
 
-            // --- ROUTE  : LES FILTRES (À faire) ---
-            composable("filter") {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Page des filtres (À venir)")
-                }
+            // Filtre par catégorie
+            composable(Routes.FILTER) {
+                SongFilterListContent(
+                    onSongClick = { songId ->
+                        navController.navigate(Routes.details(songId))
+                    }
+                )
             }
 
-            // --- ROUTE  : L'IMPORT ---
-            composable("import") {
-                // Injection du Cerveau "ImportData" (le nouveau package !)
+            // Import
+            composable(Routes.IMPORT) {
                 val viewModel: ImportDataViewModel = hiltViewModel()
 
                 ImportScreen(
                     onImportClick = {
                         viewModel.importSongs()
-                        // Une fois lancé, on retourne à la liste
-                        navController.navigate("list")
+                        navController.navigate(Routes.LIST)
                     }
                 )
             }
