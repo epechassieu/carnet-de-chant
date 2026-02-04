@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -21,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -64,7 +68,7 @@ fun SongDetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongDetailContent(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     uiState: SongDetailUiState,
     onBackClick: () -> Unit,
     onListenClick: () -> Unit = {}
@@ -92,16 +96,7 @@ fun SongDetailContent(
                         )
                     }
                 },
-                actions = {
-                    if (uiState is SongDetailUiState.Success) {
-                        IconButton(onClick = onListenClick) {
-                            Icon(
-                                imageVector = Icons.Default.MusicNote,
-                                contentDescription = stringResource(R.string.listen)
-                            )
-                        }
-                    }
-                },
+
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -120,7 +115,7 @@ fun SongDetailContent(
                 )
 
                 is SongDetailUiState.Error -> Text(
-                    text= stringResource(R.string.song_detail_error),
+                    text = stringResource(R.string.song_detail_error),
                     modifier.align(Alignment.Center)
                 )
 
@@ -145,22 +140,36 @@ fun SongDetailContent(
 
                         Spacer(modifier.height(8.dp))
 
-                        // lien vers youtube
-                        if (!song.urlMedia.isNullOrBlank()) {
-                            Button(
-                                onClick = {
-                                    try {
-                                        uriHandler.openUri(song.urlMedia)
-                                    } catch (e: Exception) {
-                                        // mettre un message lien cassé ou autre
-                                        e.printStackTrace()
-                                    }
-                                },
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            // lien officiel
+                            if (!song.urlMedia.isNullOrBlank()) {
+                                Button(
+                                    onClick = {
+                                        try {
+                                            uriHandler.openUri(song.urlMedia)
+                                        } catch (e: Exception) {
+                                            // mettre un message lien cassé ou autre
+                                            e.printStackTrace()
+                                        }
+                                    },
+                                    shape = MaterialTheme.shapes.medium
+                                ) {
+                                    Icon(Icons.Default.PlayArrow, contentDescription = null)
+                                    Spacer(modifier.width(8.dp))
+                                    Text(text = stringResource(R.string.song_detail_button_text))
+                                }
+                            }
+                            // Bouton ajouter un audio
+                            OutlinedButton(
+                                onClick = onListenClick,
                                 shape = MaterialTheme.shapes.medium
                             ) {
-                                Icon(Icons.Default.PlayArrow, contentDescription = null)
-                                Spacer(modifier.width(8.dp))
-                                Text(text=stringResource(R.string.song_detail_button_text))
+                                Icon(Icons.Default.Add, contentDescription = null)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = stringResource(R.string.song_detail_add_audio))
                             }
                         }
 

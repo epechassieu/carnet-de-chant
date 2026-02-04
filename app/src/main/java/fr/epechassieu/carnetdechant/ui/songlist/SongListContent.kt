@@ -20,35 +20,38 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
 
 @Composable
 fun SongListContent(
+    modifier : Modifier = Modifier,
     state: SongListUiState,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     onSongClick: (String) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier.fillMaxSize()) {
 
         // 1. Zone de Recherche
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
-            modifier = Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            placeholder = { Text("Rechercher un chant...") },
+            placeholder = { Text(text=stringResource(R.string.song_listcontent_outlinedeextfield_placeholder)) },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
                     IconButton(onClick = { onSearchQueryChange("") }) {
                         Icon(
                             imageVector = Icons.Default.Clear,
-                            contentDescription = "Effacer la recherche"
+                            contentDescription = stringResource(R.string.song_listcontent_clear_button)
                         )
                     }
                 }
@@ -58,25 +61,33 @@ fun SongListContent(
         )
 
         // 2. La Liste (pilotée par l'état)
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier.fillMaxSize()) {
             when (state) {
                 is SongListUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CircularProgressIndicator(modifier.align(Alignment.Center))
                 }
                 is SongListUiState.Error -> {
                     Text(
-                        text = "Erreur : ${state.message}",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
+                        text = stringResource(R.string.song_listcontent_error_message, state.message),
+                        modifier.align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
                 is SongListUiState.Success -> {
                     if (state.songs.isEmpty()) {
+
+                        val emptyMessage = if (searchQuery.isBlank()) {
+                            stringResource(R.string.song_listcontent_empty_database)
+                        }  else {
+                            stringResource(R.string.song_list_no_search_results)
+                        }
+
                         Text(
-                            text = if(searchQuery.isBlank()) "Aucun chant importé." else "Aucun résultat pour cette recherche.",
-                            modifier = Modifier.align(Alignment.Center),
+                            text = emptyMessage,
+                            modifier.align(Alignment.Center),
                             style = MaterialTheme.typography.bodyLarge
                         )
+
                     } else {
                         LazyColumn {
                             items(

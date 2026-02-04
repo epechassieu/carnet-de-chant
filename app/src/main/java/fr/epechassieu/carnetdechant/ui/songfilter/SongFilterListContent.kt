@@ -29,12 +29,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.epechassieu.carnetdechant.domain.model.Category
-import fr.epechassieu.carnetdechant.ui.songlist.SongItem // On importe ton composant unitaire
+import fr.epechassieu.carnetdechant.ui.songlist.SongItem
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 
@@ -58,6 +60,7 @@ fun SongFilterListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongFilterListContent(
+    modifier : Modifier = Modifier,
     state: SongFilterUiState,
     onSongClick: (String) -> Unit,
     onCategorySelect: (Category) -> Unit,
@@ -80,7 +83,7 @@ fun SongFilterListContent(
                     title = { Text(state.selectedCategory.libelle) },
                     navigationIcon = {
                         IconButton(onClick = onClearSelection) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.song_backclic))
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -90,7 +93,7 @@ fun SongFilterListContent(
             } else {
                 // VUE GRILLE : Titre générique
                 CenterAlignedTopAppBar(
-                    title = { Text("Par Thèmes") },
+                    title = { Text(text=stringResource(R.string.song_filter_title_theme)) },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -100,7 +103,7 @@ fun SongFilterListContent(
     ) { innerPadding ->
 
         Box(
-            modifier = Modifier
+            modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
@@ -110,23 +113,23 @@ fun SongFilterListContent(
                 // VUE A : LA GRILLE DES CATEGORIES
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
+                    modifier.fillMaxSize(),
                     contentPadding = PaddingValues(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxSize()
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(Category.entries.filter { it != Category.INCONNU })  { category ->
                         Button(
                             onClick = { onCategorySelect(category) },
-                            shape = MaterialTheme.shapes.medium,
-                            modifier = Modifier
+                            modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp)
+                                .padding(vertical = 8.dp),
+                            shape = MaterialTheme.shapes.medium
                         ) {
                             Text(
                                 text = category.libelle,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(8.dp)
+                                modifier.padding(8.dp),
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
@@ -136,8 +139,8 @@ fun SongFilterListContent(
                 // VUE B : LA LISTE DES CHANTS FILTRÉS
                 if (state.filteredSongs.isEmpty()) {
                     Text(
-                        text = "Aucun chant dans cette catégorie.",
-                        modifier = Modifier.align(Alignment.Center)
+                        text = stringResource(R.string.song_filter_is_empty),
+                        modifier.align(Alignment.Center)
                     )
                 } else {
                     LazyColumn(

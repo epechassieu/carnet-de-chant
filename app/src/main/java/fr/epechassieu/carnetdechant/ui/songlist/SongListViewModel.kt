@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.epechassieu.carnetdechant.domain.model.Song
-import fr.epechassieu.carnetdechant.domain.usecases.GetAllSongsUseCase
+import fr.epechassieu.carnetdechant.domain.usecases.GetSongsByTitleUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SongListViewModel @Inject constructor(
-    private val getAllSongsUseCase: GetAllSongsUseCase
+    private val getSongsByTitleUseCase: GetSongsByTitleUseCase,
+
 ) : ViewModel() {
 
     // 1. Gestion de la Recherche
@@ -26,7 +27,7 @@ class SongListViewModel @Inject constructor(
     // 2. L'État UI combiné (Liste + Recherche)
     val uiState: StateFlow<SongListUiState> = combine<List<Song>, String,
             SongListUiState>(
-        getAllSongsUseCase(),
+        getSongsByTitleUseCase(),
         _searchQuery
     ) { songs, query ->
         SongListUiState.Success(filterSongs(songs, query))

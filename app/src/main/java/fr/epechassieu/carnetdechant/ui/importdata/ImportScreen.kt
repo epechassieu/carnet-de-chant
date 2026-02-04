@@ -20,18 +20,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import fr.epechassieu.carnetdechant.R
 
 @Composable
 fun ImportScreen(
+    modifier : Modifier = Modifier,
     importState: ImportDataUiState,
     onImportClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier
             .fillMaxSize()
             .padding(24.dp),
         verticalArrangement = Arrangement.Center,
@@ -40,28 +43,28 @@ fun ImportScreen(
         Icon(
             imageVector = Icons.Default.Warning,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(64.dp)
+            modifier.size(64.dp),
+            tint = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier.height(24.dp))
 
         Text(
-            text = "Droits d'auteur & SACEM",
+            text = stringResource(R.string.import_title),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier.height(16.dp))
 
         Text(
-            text = "Le téléchargement du carnet implique que vous ou votre église est en règle avec les déclarations SACEM/SECLI.\n\nEn cliquant sur le bouton ci-dessous, vous certifiez avoir les droits nécessaires pour projeter ou imprimer ces paroles.",
+            text = stringResource(R.string.import_message),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier.height(32.dp))
 
         when (importState) {
             is ImportDataUiState.Loading -> {
@@ -69,23 +72,23 @@ fun ImportScreen(
             }
             is ImportDataUiState.Error -> {
                 Text(
-                    text = "Erreur : ${importState.message}",
+                    text = stringResource(R.string.import_error_message, importState.message),
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier.height(16.dp))
                 Button(onClick = onImportClick) {
-                    Text("Réessayer")
+                    Text(text= stringResource(R.string.import_button_text_again))
                 }
             }
             else -> {
                 Button(
                     onClick = onImportClick,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier.fillMaxWidth()
                 ) {
                     Icon(Icons.Default.Download, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("J'accepte et je télécharge")
+                    Spacer(modifier.width(8.dp))
+                    Text(text= stringResource(R.string.import_button_text))
                 }
             }
         }

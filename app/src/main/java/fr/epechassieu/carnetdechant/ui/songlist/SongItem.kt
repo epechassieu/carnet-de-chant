@@ -22,12 +22,13 @@ import fr.epechassieu.carnetdechant.domain.model.Song
 
 @Composable
 fun SongItem(
+    modifier : Modifier = Modifier,
     song: Song,
     onClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier
+        modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(
@@ -35,13 +36,13 @@ fun SongItem(
         )
     ) {
         Row(
-            modifier = Modifier
+            modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Partie Gauche : Textes
-            Column(modifier = Modifier.weight(1f)) {
+            Column(modifier.weight(1f)) {
                 Text(
                     text = song.title,
                     style = MaterialTheme.typography.titleMedium,

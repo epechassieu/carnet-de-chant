@@ -23,6 +23,7 @@ class SongDetailViewModel @Inject constructor(
 
     // On transforme le Flow<Song?> en Flow<SongDetailUiState>
     val uiState: StateFlow<SongDetailUiState> = getSongByIdUseCase(songId)
+
         .map { song ->
             if (song != null) SongDetailUiState.Success(song) else SongDetailUiState.Error
         }

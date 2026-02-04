@@ -9,6 +9,7 @@ import fr.epechassieu.carnetdechant.domain.usecases.GetSongsByCategoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -22,16 +23,13 @@ class SongFilterViewModel @Inject constructor(
 
     private val _selectedCategory = MutableStateFlow<Category?>(null)
 
-    val uiState: StateFlow<SongFilterUiState> = _selectedCategory
+    val uiState: StateFlow<SongFilterUiState> = _selectedCategory.filterNotNull()
         .flatMapLatest { category ->
-            if (category == null) {
-                flowOf(SongFilterUiState())
-            } else {
                 getSongsByCategoryUseCase(category).map { songs ->
                     SongFilterUiState(selectedCategory = category, filteredSongs = songs)
                 }
             }
-        }
+
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

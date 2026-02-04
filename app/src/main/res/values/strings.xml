@@ -34,5 +34,6 @@
     <string name="listen_no_personal_links">Aucun lien personnel ajouté.</string>
     <string name="listen_add_placeholder">Coller un lien YouTube, Spotify...</string>
     <string name="delete">Supprimer</string>
+    <string name="song_detail_add_audio">Ajouter un audio</string>
 
 </resources>
