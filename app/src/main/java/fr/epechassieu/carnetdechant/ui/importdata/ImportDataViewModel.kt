@@ -30,11 +30,19 @@ class ImportDataViewModel @Inject constructor(
     fun importSongs() {
         viewModelScope.launch {
             _uiState.value = ImportDataUiState.Loading
-            try {
-                songRepository.loadSongsFromJson()
+            // 1. On appelle le Repository.
+            // ATTENTION : Ça ne "plante" plus ici, ça renvoie un résultat (Succès ou Échec)
+            val result = songRepository.loadSongsFromJson()
+
+            // 2. On regarde ce qu'il y a dans la boîte
+            result.onSuccess { message ->
+                // C'est gagné !
+                // Tu pourrais même utiliser 'message' ("X chants importés") si tu voulais l'afficher
                 _uiState.value = ImportDataUiState.Success
-            } catch (e: Exception) {
-                _uiState.value = ImportDataUiState.Error(e.message ?: "Erreur inconnue")
+            }.onFailure { error ->
+                // C'est perdu !
+                // 'error' contient l'exception avec ton message traduit ("Pas de connexion", etc.)
+                _uiState.value = ImportDataUiState.Error(error.message ?: "Erreur inconnue")
             }
         }
     }

@@ -35,5 +35,14 @@
     <string name="listen_add_placeholder">Coller un lien YouTube, Spotify...</string>
     <string name="delete">Supprimer</string>
     <string name="song_detail_add_audio">Ajouter un audio</string>
+    <string name="error_link_open">Impossible d\'ouvrir le lien</string>
+    <string name="error_empty_list">le serveur renvoie une liste vide ou non json</string>
+    <!--error song repository impl -->
+    <string name="error_network">Pas de connexion Internet. Vérifiez votre réseau.</string>
+    <string name="error_file_not_found">Fichier introuvable ou lien cassé.</string>
+    <string name="error_file_corrupt">Le fichier des chants est corrompu (Erreur de format).</string>
+    <string name="error_server_unavailable">Serveur indisponible (Erreur %1$d).</string> <string name="error_http_client">Fichier introuvable (Erreur %1$d).</string>
+    <string name="error_database">Erreur de sauvegarde sur le téléphone.</string>
+    <string name="error_unknown">Erreur inattendue : %1$s</string>
 
 </resources>
