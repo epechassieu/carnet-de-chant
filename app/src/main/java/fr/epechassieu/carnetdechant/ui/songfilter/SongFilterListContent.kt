@@ -41,6 +41,16 @@ import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 
 
+/**
+ * Main entry point for the song filtering screen.
+ *
+ * This composable connects the [SongFilterViewModel] to the [SongFilterListContent] UI.
+ * It manages the display of song categories and the subsequent filtered list of songs
+ * based on the user's selection.
+ *
+ * @param onSongClick Callback invoked when a specific song is selected, passing the song's ID.
+ * @param viewModel The ViewModel handling the business logic and UI state for filtering.
+ */
 @Composable
 fun SongFilterListScreen(
     onSongClick: (String) -> Unit,
@@ -57,6 +67,23 @@ fun SongFilterListScreen(
     )
 }
 
+/**
+ * A stateless composable that displays the UI for the song filtering screen.
+ * It can show either a grid of song categories or a list of songs filtered by a selected category.
+ *
+ * This component is "dumb" as it only displays the data provided in the [state] and delegates
+ * user actions to the provided lambda functions.
+ *
+ * It handles the Android back button press: if a category is selected (showing the song list),
+ * the back button will clear the selection and return to the category grid instead of navigating
+ * away from the screen.
+ *
+ * @param modifier The modifier to be applied to the layout.
+ * @param state The current state of the UI, containing the list of categories, the selected category, and the list of filtered songs.
+ * @param onSongClick A callback invoked when a song from the filtered list is clicked. It provides the song's ID.
+ * @param onCategorySelect A callback invoked when a category from the grid is selected.
+ * @param onClearSelection A callback invoked to clear the current category selection, typically to return to the category grid.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongFilterListContent(

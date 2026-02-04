@@ -7,6 +7,16 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 
+/**
+ * Represents a user-defined media URL associated with a specific song in the database.
+ *
+ * This entity allows users to link external resources (like YouTube videos, audio files, or web pages)
+ * to a song. It maintains a many-to-one relationship with the [SongEntity].
+ *
+ * @property id The unique identifier for this media entry (auto-generated).
+ * @property songId The identifier of the song this URL is associated with.
+ * @property url The actual URL string pointing to the media resource.
+ */
 @Entity(
     tableName = "url_media_user",
     foreignKeys = [

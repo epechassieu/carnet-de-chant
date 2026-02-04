@@ -1,7 +1,5 @@
 package fr.epechassieu.carnetdechant.ui.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -20,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,16 +30,26 @@ import fr.epechassieu.carnetdechant.ui.importdata.ImportDataViewModel
 import fr.epechassieu.carnetdechant.ui.importdata.ImportScreen
 import fr.epechassieu.carnetdechant.ui.songlist.SongListContent
 import fr.epechassieu.carnetdechant.ui.songlist.SongListViewModel
-
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.ui.importdata.ImportDataUiState
 import fr.epechassieu.carnetdechant.ui.listen.ListenScreen
 import fr.epechassieu.carnetdechant.ui.songdetail.SongDetailScreen
-import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListContent
 import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListScreen
 
+/**
+ * The main entry point for the application's user interface, managing the primary navigation
+ * structure and top-level layout components.
+ *
+ * This composable sets up a [Scaffold] containing:
+ * - A [CenterAlignedTopAppBar] displayed on specific primary screens.
+ * - A [NavigationBar] (Bottom Bar) providing access to the Song List, Filters, and Import features.
+ * - A [NavHost] that handles transitions between various destinations like song details,
+ *   listening screens, and data management.
+ *
+ * @param modifier The [Modifier] to be applied to the root layout of the screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(modifier : Modifier = Modifier) {

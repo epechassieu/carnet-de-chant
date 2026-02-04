@@ -6,6 +6,11 @@ import fr.epechassieu.carnetdechant.domain.repository.SongRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Use case responsible for retrieving a list of songs filtered by a specific category.
+ *
+ * @property songRepository The repository providing access to song data.
+ */
 class GetSongsByCategoryUseCase @Inject constructor(
     private val songRepository: SongRepository
 ) {

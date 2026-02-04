@@ -27,6 +27,17 @@ import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
 
+/**
+ * A Composable that displays the main content of the song list screen.
+ * It includes a search bar and a list of songs, handling different UI states
+ * such as loading, error, empty, and success.
+ *
+ * @param modifier The modifier to be applied to the layout.
+ * @param state The current state of the song list UI (e.g., Loading, Success, Error).
+ * @param searchQuery The current text in the search input field.
+ * @param onSearchQueryChange A callback invoked when the search query text changes.
+ * @param onSongClick A callback invoked when a song item is clicked, passing the song's ID.
+ */
 @Composable
 fun SongListContent(
     modifier : Modifier = Modifier,

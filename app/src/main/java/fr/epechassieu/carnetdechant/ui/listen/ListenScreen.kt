@@ -48,6 +48,15 @@ import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 
+/**
+ * Screen that allows users to listen to a song via official and personal media links.
+ *
+ * It manages the display of the song title, provides an interface to open external URLs,
+ * and allows users to add or remove their own custom media links.
+ *
+ * @param onBackClick Callback invoked when the user navigates back.
+ * @param viewModel The [ListenViewModel] that provides the screen state and handles business logic.
+ */
 @Composable
 fun ListenScreen(
     onBackClick: () -> Unit,
@@ -63,6 +72,20 @@ fun ListenScreen(
     )
 }
 
+/**
+ * Stateless version of the Listen screen that displays the song title and media links.
+ *
+ * It handles different UI states (loading, error, or success) and provides the layout for:
+ * - The top app bar with the song title and back navigation.
+ * - The official media link section.
+ * - The list of user-added media links with play and delete actions.
+ * - An input field to add new custom media URLs.
+ *
+ * @param uiState The current state of the UI to be displayed.
+ * @param onBackClick Callback invoked when the back button is pressed.
+ * @param onAddUrl Callback invoked when the user adds a new URL.
+ * @param onDeleteUrl Callback invoked when the user requests to delete a specific custom link.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListenContent(

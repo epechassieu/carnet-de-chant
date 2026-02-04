@@ -8,6 +8,10 @@ import fr.epechassieu.carnetdechant.data.database.entities.SongEntity
 import kotlinx.coroutines.flow.Flow
 
 
+/**
+ * Data Access Object (DAO) for managing [SongEntity] instances in the local database.
+ * Provides methods for querying, inserting, and counting songs.
+ */
 @Dao
 interface SongDao {
 

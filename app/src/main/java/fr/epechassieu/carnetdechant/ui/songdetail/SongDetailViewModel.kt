@@ -12,6 +12,16 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 
+/**
+ * ViewModel responsible for managing the state of the song detail screen.
+ *
+ * It retrieves the song ID from the [SavedStateHandle], fetches the corresponding
+ * song data using [GetSongByIdUseCase], and exposes the result as a [StateFlow]
+ * of [SongDetailUiState].
+ *
+ * @property getSongByIdUseCase Use case to retrieve a song's information by its unique identifier.
+ * @param savedStateHandle Handle to saved state, used here to extract the "songId" navigation argument.
+ */
 @HiltViewModel
 class SongDetailViewModel @Inject constructor(
     private val getSongByIdUseCase: GetSongByIdUseCase,

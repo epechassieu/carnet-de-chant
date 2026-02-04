@@ -8,6 +8,12 @@ import fr.epechassieu.carnetdechant.data.database.dao.UrlMediaUserDao
 import fr.epechassieu.carnetdechant.data.database.entities.SongEntity
 import fr.epechassieu.carnetdechant.data.database.entities.UrlMediaUserEntity
 
+/**
+ * Main Room database configuration for the application.
+ *
+ * This database provides access to the persistent storage for song data and user-defined media URLs.
+ * It manages the [SongEntity] and [UrlMediaUserEntity] tables and uses [Converters] for complex data types.
+ */
 @Database(
     entities = [SongEntity::class, UrlMediaUserEntity::class],
     version = 1,

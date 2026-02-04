@@ -11,6 +11,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the logic of importing song data.
+ *
+ * It coordinates the process of loading songs from a data source (JSON) via the [SongRepository]
+ * and exposes the current state of the operation through [uiState].
+ *
+ * @property songRepository The repository used to perform the song data import.
+ */
 @HiltViewModel
 class ImportDataViewModel @Inject constructor(
     private val songRepository: SongRepository

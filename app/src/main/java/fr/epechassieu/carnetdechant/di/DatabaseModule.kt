@@ -13,6 +13,12 @@ import fr.epechassieu.carnetdechant.data.database.dao.UrlMediaUserDao
 import javax.inject.Singleton
 
 
+/**
+ * Dagger Hilt module responsible for providing database-related dependencies.
+ *
+ * This module is installed in the [SingletonComponent], ensuring that the database
+ * instance and its DAOs are shared across the entire application lifecycle.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
@@ -27,12 +33,24 @@ object DatabaseModule {
             .build()
     }
 
+    /**
+     * Provides the [SongDao] instance to be used for database operations related to songs.
+     *
+     * @param appDatabase The [AppDatabase] instance from which the DAO is retrieved.
+     * @return The [SongDao] used for accessing song data.
+     */
     @Provides
     @Singleton
     fun provideSongDao(appDatabase: AppDatabase): SongDao {
         return appDatabase.songDao()
     }
 
+    /**
+     * Provides the [UrlMediaUserDao] instance to be used for database operations related to média.
+     *
+     * @param appDatabase The [AppDatabase] instance from which the DAO is retrieved.
+     * @return The [UrlMediaUserDao] used for accessing url data.
+     */
     @Provides
     @Singleton
     fun provideUrlMediaUserDao(appDatabase: AppDatabase): UrlMediaUserDao {

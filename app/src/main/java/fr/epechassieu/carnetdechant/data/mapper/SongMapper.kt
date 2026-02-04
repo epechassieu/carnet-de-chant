@@ -5,7 +5,14 @@ import fr.epechassieu.carnetdechant.data.remote.SongDto
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
 
-// Entity -> Domain
+/**
+ * Maps a [SongEntity] from the local database to a [Song] domain model.
+ *
+ * This conversion includes parsing the comma-separated categories string into a list of
+ * [Category] enum constants, ignoring any values that do not match the existing enum.
+ *
+ * @return A [Song] instance containing the data from the entity.
+ */
 fun SongEntity.toDomain(): Song {
     return Song(
         id = id,
@@ -28,7 +35,11 @@ fun SongEntity.toDomain(): Song {
     )
 }
 
-// Domain -> Entity
+/**
+ * Converts a [Song] domain model to a [SongEntity] for database storage.
+ *
+ * @return A [SongEntity] containing the song's data, with categories serialized as a comma-separated string.
+ */
 fun Song.toEntity(): SongEntity {
     return SongEntity(
         id = id,
@@ -41,7 +52,11 @@ fun Song.toEntity(): SongEntity {
     )
 }
 
-// DTO -> Entity
+/**
+ * Maps a [Song] domain model to a [SongEntity] for database storage.
+ *
+ * @return A [SongEntity] containing the song's data, with categories serialized as a comma-separated string.
+ */
 fun SongDto.toEntity(): SongEntity {
     return SongEntity(
         id = id,

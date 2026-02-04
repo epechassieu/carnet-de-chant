@@ -1,5 +1,9 @@
 package fr.epechassieu.carnetdechant.domain.model
 
+/**
+ * Represents the thematic or liturgical categories used to classify songs within the songbook.
+ * Each category contains a human-readable label ([libelle]) used for display in the user interface.
+ */
 enum class Category(val libelle: String) {
     ACCUEIL("Accueil"),
     ADORATION("Adoration"),
@@ -27,5 +31,4 @@ enum class Category(val libelle: String) {
     SALUT("Salut"),
     UNITE("Unité"),
     INCONNU("Inconnu")
-
 }

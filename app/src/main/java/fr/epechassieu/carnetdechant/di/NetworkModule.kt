@@ -12,6 +12,12 @@ import io.ktor.http.ContentType
 import kotlinx.serialization.json.Json //configure parsing Json
 import javax.inject.Singleton
 
+/**
+ * Dagger Hilt module responsible for providing network-related dependencies.
+ *
+ * This module provides a singleton instance of [HttpClient] configured with the Android engine
+ * and content negotiation using Kotlinx Serialization to handle JSON responses.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {

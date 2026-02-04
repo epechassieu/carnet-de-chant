@@ -14,6 +14,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state of the "Listen" screen.
+ *
+ * It retrieves and provides the official media URL for a specific song as well as
+ * custom media URLs added by the user. It handles the loading of song details
+ * and allows for adding or deleting user-specific media links.
+ *
+ * @property getSongByIdUseCase Use case to fetch song details including the official media link.
+ * @property urlMediaUserRepository Repository to manage user-defined media URLs for the song.
+ * @property savedStateHandle Handle to access the "songId" passed as a navigation argument.
+ */
 @HiltViewModel
 class ListenViewModel @Inject constructor(
     private val getSongByIdUseCase: GetSongByIdUseCase,
@@ -30,9 +41,18 @@ class ListenViewModel @Inject constructor(
         loadData()
     }
 
+    /**
+     * Loads the song details and associated user media URLs.
+     *
+     * This function launches two concurrent coroutines to:
+     * 1. Fetch the song's basic information (title and official media URL) via [getSongByIdUseCase].
+     * 2. Fetch any custom media URLs provided by the user via [urlMediaUserRepository].
+     *
+     * Updates the [_uiState] with the retrieved data or an error message if the song is not found.
+     */
     private fun loadData() {
         viewModelScope.launch {
-            // Charger les infos du chant (titre + lien officiel)
+            // Charger les infos du chant
             getSongByIdUseCase(songId).collect { song ->
                 if (song != null) {
                     _uiState.update {

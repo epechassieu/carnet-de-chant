@@ -9,6 +9,10 @@ import androidx.room.Update
 import fr.epechassieu.carnetdechant.data.database.entities.UrlMediaUserEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Data Access Object for the `url_media_user` table.
+ * Provides methods to manage user-defined media URLs associated with specific songs.
+ */
 @Dao
 interface UrlMediaUserDao {
 

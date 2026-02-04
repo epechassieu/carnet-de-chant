@@ -14,6 +14,15 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and business logic of the song list screen.
+ *
+ * This ViewModel handles the retrieval of songs via [getSongsByTitleUseCase] and provides
+ * a search functionality to filter songs by title or lyrics. It exposes the current
+ * UI state through a [StateFlow] of [SongListUiState].
+ *
+ * @property getSongsByTitleUseCase The use case used to retrieve the stream of songs.
+ */
 @HiltViewModel
 class SongListViewModel @Inject constructor(
     private val getSongsByTitleUseCase: GetSongsByTitleUseCase,

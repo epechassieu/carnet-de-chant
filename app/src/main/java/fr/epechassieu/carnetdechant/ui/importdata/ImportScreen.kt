@@ -27,6 +27,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.epechassieu.carnetdechant.R
 
+/**
+ * Composable screen that provides the user interface for importing data.
+ *
+ * Displays an informative message and a button to trigger the import process.
+ * It also handles different UI states such as loading indicators and error messages.
+ *
+ * @param modifier The [Modifier] to be applied to the screen layout.
+ * @param importState The current state of the data import process ([ImportDataUiState]).
+ * @param onImportClick Callback function to be invoked when the import button is clicked.
+ */
 @Composable
 fun ImportScreen(
     modifier : Modifier = Modifier,

@@ -46,6 +46,18 @@ import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 
 
+/**
+ * Display the detail screen of a specific song.
+ *
+ * This composable connects the [SongDetailViewModel] to the [SongDetailContent] UI,
+ * handling the state collection and providing navigation callbacks.
+ *
+ * @param onBackClick Callback invoked when the user presses the back navigation button.
+ * @param onListenClick Callback invoked when the user wants to listen to or add an audio recording,
+ * passing the song's unique identifier as a parameter.
+ * @param viewModel The ViewModel that manages the state of the song detail,
+ * injected by default via Hilt.
+ */
 @Composable
 fun SongDetailScreen(
     onBackClick: () -> Unit,
@@ -65,6 +77,19 @@ fun SongDetailScreen(
     )
 }
 
+/**
+ * Composable that displays the layout for the song detail screen.
+ *
+ * This function handles the visual representation of the song's information, including
+ * the top bar with the song title, the metadata (songbook, number, categories),
+ * action buttons for media/recordings, and the song lyrics. It reacts to different
+ * [SongDetailUiState] states (Loading, Error, Success).
+ *
+ * @param modifier The [Modifier] to be applied to the layout.
+ * @param uiState The current state of the UI, providing the song data or error/loading status.
+ * @param onBackClick Callback invoked when the navigation back button is clicked.
+ * @param onListenClick Callback invoked when the user clicks the button to manage audio recordings.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongDetailContent(

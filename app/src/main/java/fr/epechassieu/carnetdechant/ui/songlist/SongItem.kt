@@ -20,6 +20,14 @@ import androidx.compose.ui.unit.dp
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
 
+/**
+ * A composable that represents a single item in the song list.
+ * Displays the song's title, origin (songbook and number), and its categories within a clickable card.
+ *
+ * @param modifier The [Modifier] to be applied to the component.
+ * @param song The [Song] data object containing the information to display.
+ * @param onClick Callback to be executed when the item is clicked.
+ */
 @Composable
 fun SongItem(
     modifier : Modifier = Modifier,

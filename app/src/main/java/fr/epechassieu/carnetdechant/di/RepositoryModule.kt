@@ -10,6 +10,11 @@ import fr.epechassieu.carnetdechant.domain.repository.SongRepository
 import fr.epechassieu.carnetdechant.domain.repository.UrlMediaUserRepository
 import javax.inject.Singleton
 
+/**
+ * Dagger Hilt module responsible for providing repository implementations.
+ * This module binds repository interfaces to their concrete implementations
+ * and ensures they are provided as singletons throughout the application.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {

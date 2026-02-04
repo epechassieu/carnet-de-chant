@@ -11,6 +11,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * Implementation of [SongRepository] that manages song data synchronization between
+ * a local Room database and a remote API service.
+ *
+ * This repository handles the data flow by fetching song entities from the local [SongDao]
+ * and converting them to domain [Song] models. It also provides functionality to
+ * initialize the local database using data retrieved from [SongApiService].
+ *
+ * @property songDao The Data Access Object for local song storage operations.
+ * @property songApiService The service used to fetch song data from a remote source.
+ */
 class SongRepositoryImpl @Inject constructor(
     private val songDao: SongDao,
     private val songApiService: SongApiService
