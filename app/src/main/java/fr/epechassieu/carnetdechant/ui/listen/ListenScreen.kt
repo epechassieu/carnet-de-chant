@@ -1,5 +1,7 @@
 package fr.epechassieu.carnetdechant.ui.listen
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -38,7 +40,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -94,6 +98,7 @@ fun ListenContent(
     onAddUrl: (String) -> Unit,
     onDeleteUrl: (UrlMediaUser) -> Unit
 ) {
+    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     var newUrlText by remember { mutableStateOf("") }
 
@@ -155,11 +160,13 @@ fun ListenContent(
                                 LinkCard(
                                     url = uiState.officialUrl,
                                     onPlayClick = {
-                                        try {
+/*                                        try {
                                             uriHandler.openUri(uiState.officialUrl)
                                         } catch (e: Exception) {
                                             e.printStackTrace()
-                                        }
+                                        }*/
+                                        openUrlSafe(context,uriHandler, uiState.officialUrl)
+
                                     },
                                     onDeleteClick = null // Pas de suppression pour le lien officiel
                                 )
@@ -185,11 +192,13 @@ fun ListenContent(
                             LinkCard(
                                 url = urlMedia.url,
                                 onPlayClick = {
-                                    try {
+/*                                    try {
                                         uriHandler.openUri(urlMedia.url)
                                     } catch (e: Exception) {
                                         e.printStackTrace()
-                                    }
+                                    }*/
+                                    openUrlSafe(context,uriHandler, urlMedia.url)
+
                                 },
                                 onDeleteClick = { onDeleteUrl(urlMedia) }
                             )
@@ -289,6 +298,19 @@ private fun LinkCard(
                 }
             }
         }
+    }
+}
+
+// --- try catch for Open Url.---
+
+fun openUrlSafe(context: Context, uriHandler: UriHandler, url: String) {
+    if (url.isBlank()) return // Sécurité bonus
+
+    try {
+        uriHandler.openUri(url)
+    } catch (e: Exception) {
+        Toast.makeText(context, context.getString(R.string.error_link_open), Toast.LENGTH_SHORT).show()
+        e.printStackTrace()
     }
 }
 
