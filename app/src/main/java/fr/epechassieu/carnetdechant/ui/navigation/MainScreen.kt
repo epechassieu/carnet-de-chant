@@ -22,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -35,14 +36,16 @@ import fr.epechassieu.carnetdechant.ui.songlist.SongListViewModel
 
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.ui.importdata.ImportDataUiState
+import fr.epechassieu.carnetdechant.ui.listen.ListenScreen
 import fr.epechassieu.carnetdechant.ui.songdetail.SongDetailScreen
 import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListContent
 import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(modifier : Modifier = Modifier) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -54,7 +57,7 @@ fun MainScreen() {
         topBar = {
             if (showBars) {
                 CenterAlignedTopAppBar(
-                    title = { Text("Carnet de Chant") },
+                    title = { Text(text=stringResource(R.string.main_topbar_title)) },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -67,7 +70,7 @@ fun MainScreen() {
             NavigationBar {
                 NavigationBarItem(
                     icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Liste") },
-                    label = { Text("Chants") },
+                    label = { Text(text=stringResource(R.string.main_bottom_bar_list)) },
                     selected = currentRoute == Routes.LIST,
                     onClick = {
                         navController.navigate(Routes.LIST) {
@@ -78,7 +81,7 @@ fun MainScreen() {
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.FilterAlt, contentDescription = "Filtres") },
-                    label = { Text("Filtres") },
+                    label = { Text(text=stringResource(R.string.main_bottom_bar_filter)) },
                     selected = currentRoute == Routes.FILTER,
                     onClick = {
                         navController.navigate(Routes.FILTER) {
@@ -89,7 +92,7 @@ fun MainScreen() {
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.Download, contentDescription = "Import") },
-                    label = { Text("Import") },
+                    label = { Text(text=stringResource(R.string.main_bottom_bar_import)) },
                     selected = currentRoute == Routes.IMPORT,
                     onClick = {
                         navController.navigate(Routes.IMPORT) {
@@ -104,7 +107,7 @@ fun MainScreen() {
         NavHost(
             navController = navController,
             startDestination = Routes.LIST,
-            modifier = Modifier.padding(innerPadding)
+            modifier.padding(innerPadding)
         ) {
             // Liste des chants
             composable(Routes.LIST) {
@@ -128,6 +131,18 @@ fun MainScreen() {
                 arguments = listOf(navArgument("songId") { type = NavType.StringType })
             ) {
                 SongDetailScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onListenClick = { songId ->
+                        navController.navigate(Routes.listen(songId))
+                    }
+                )
+            }
+            // listen (après details)
+            composable(
+                Routes.LISTEN,
+                arguments = listOf(navArgument("songId") { type = NavType.StringType })
+            ) {
+                ListenScreen(
                     onBackClick = { navController.popBackStack() }
                 )
             }
@@ -158,6 +173,8 @@ fun MainScreen() {
                     onImportClick = { viewModel.importSongs() }
                 )
             }
+
+
         }
     }
 }

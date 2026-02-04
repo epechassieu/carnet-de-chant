@@ -1,5 +1,6 @@
 package fr.epechassieu.carnetdechant.ui.songdetail
 
+import android.R.attr.text
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -28,37 +30,44 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
-import javax.annotation.meta.When
 
 
 @Composable
 fun SongDetailScreen(
     onBackClick: () -> Unit,
+    onListenClick: (String) -> Unit = {},
     viewModel: SongDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     SongDetailContent(
         uiState = uiState,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onListenClick = {
+            if (uiState is SongDetailUiState.Success) {
+                onListenClick((uiState as SongDetailUiState.Success).song.id)
+            }
+        }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongDetailContent(
+    modifier : Modifier = Modifier,
     uiState: SongDetailUiState,
     onBackClick: () -> Unit,
+    onListenClick: () -> Unit = {}
 ) {
     val uriHandler = LocalUriHandler.current
 
@@ -69,11 +78,29 @@ fun SongDetailContent(
                     Text(
                         text = when (uiState) {
                             is SongDetailUiState.Success -> uiState.song.title
-                            else -> "Chargement..."
+                            else -> stringResource(R.string.song_detail_loading)
                         },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.song_backclic)
+                        )
+                    }
+                },
+                actions = {
+                    if (uiState is SongDetailUiState.Success) {
+                        IconButton(onClick = onListenClick) {
+                            Icon(
+                                imageVector = Icons.Default.MusicNote,
+                                contentDescription = stringResource(R.string.listen)
+                            )
+                        }
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -83,20 +110,18 @@ fun SongDetailContent(
         }
     ) { innerPadding ->
         Box(
-            modifier = Modifier
+            modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
             when (val state = uiState) {
                 is SongDetailUiState.Loading -> CircularProgressIndicator(
-                    modifier = Modifier.align(
-                        Alignment.Center
-                    )
+                    modifier.align(Alignment.Center)
                 )
 
                 is SongDetailUiState.Error -> Text(
-                    "Chant introuvable",
-                    modifier = Modifier.align(Alignment.Center)
+                    text= stringResource(R.string.song_detail_error),
+                    modifier.align(Alignment.Center)
                 )
 
                 is SongDetailUiState.Success -> {
@@ -104,7 +129,7 @@ fun SongDetailContent(
 
                     // --- LE CONTENU DU CHANT ---
                     Column(
-                        modifier = Modifier
+                        modifier
                             .fillMaxSize()
                             .padding(16.dp)
                             .verticalScroll(rememberScrollState()) // ,Permet de scroller
@@ -118,7 +143,7 @@ fun SongDetailContent(
                             color = MaterialTheme.colorScheme.primary
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier.height(8.dp))
 
                         // lien vers youtube
                         if (!song.urlMedia.isNullOrBlank()) {
@@ -134,24 +159,24 @@ fun SongDetailContent(
                                 shape = MaterialTheme.shapes.medium
                             ) {
                                 Icon(Icons.Default.PlayArrow, contentDescription = null)
-                                Spacer(modifier=Modifier.width(8.dp))
-                                Text(text = "Ecouter le chant")
+                                Spacer(modifier.width(8.dp))
+                                Text(text=stringResource(R.string.song_detail_button_text))
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier.height(24.dp))
 
                         // Paroles
                         Text(
                             text = song.lyrics,
                             style = MaterialTheme.typography.bodyLarge,
                             lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.5, // Plus aéré
-                            textAlign = TextAlign.Start // Ou Start selon tes goûts
+                            textAlign = TextAlign.Start // Ou Start selon les goûts
                         )
 
 
                         // Espace pour ne pas être collé au bas de l'écran
-                        Spacer(modifier = Modifier.height(64.dp))
+                        Spacer(modifier.height(64.dp))
                     }
                 }
             }
@@ -175,7 +200,8 @@ fun SongDetailContentPreview() {
     CarnetDeChantTheme {
         SongDetailContent(
             uiState = SongDetailUiState.Success(fakeSong),
-            onBackClick = {}
+            onBackClick = {},
+            onListenClick = {}
         )
     }
 }

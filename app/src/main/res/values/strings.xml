@@ -1,3 +1,38 @@
 <resources>
     <string name="app_name">carnet de chant</string>
+    <!--importDataScreen-->
+    <string name="import_title">Droits d\auteur &amp; SACEM</string>
+    <string name="import_message">Le téléchargement du carnet implique que vous ou votre église est en règle avec les déclarations SACEM/SECLI. \n\nEn cliquant sur le bouton ci-dessous, vous certifiez avoir les droits nécessaires pour projeter ou imprimer ces paroles.</string>
+    <string name="import_button_text">J\'accepte et je télécharge</string>"
+    <string name="import_button_text_again">Réessayez</string>
+    <string name="import_error_message">Erreur : %s</string>
+    <!--mainScreen-->
+    <string name="main_topbar_title">Carnet de Chant</string>
+    <string name="main_bottom_bar_list">Chants</string>
+    <string name="main_bottom_bar_filter">Filtres</string>
+    <string name="main_bottom_bar_import">Import carnet</string>
+    <!--SongDetailScreen -->
+    <string name="song_detail_loading">Chargement...</string>
+    <string name="song_detail_error">Chant introuvable</string>
+    <string name="song_detail_button_text">Ecouter le chant</string>"
+    <!-- all -->
+    <string name="song_backclic">Retour</string>
+    <!--SongFilterListContent-->
+    <string name="song_filter_title_theme">Par Thèmes</string>
+    <string name="song_filter_is_empty">Aucun chant dans cette catégorie.</string>
+    <!--SongListContent-->
+    <string name="song_listcontent_outlinedeextfield_placeholder">Rechercher un chant…</string>
+    <string name="song_listcontent_clear_button">Effacer la recherche</string>
+    <string name="song_listcontent_error_message">Erreur : %s</string>"
+    <string name="song_listcontent_empty_database">Aucun chant importé. Pensez à aller dans l\'onglet Import !</string>
+    <string name="song_list_no_search_results">Aucun résultat pour cette recherche.</string>
+    <string name="listen">ajout lien youtube</string>
+    <string name="loading">Chargement</string>
+<!--listen -->
+    <string name="listen_official_link">Lien base</string>
+    <string name="listen_my_links">Mes liens</string>
+    <string name="listen_no_personal_links">Aucun lien personnel ajouté.</string>
+    <string name="listen_add_placeholder">Coller un lien YouTube, Spotify...</string>
+    <string name="delete">Supprimer</string>
+
 </resources>
