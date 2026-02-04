@@ -16,20 +16,8 @@ class SongRepositoryImpl @Inject constructor(
     private val songApiService: SongApiService
 ) : SongRepository {
 
-    override fun getAllSongs(): Flow<List<Song>> {
-        return songDao.getAllSongs().map { entities ->
-            entities.map { it.toDomain() }
-        }
-    }
-
     override fun getSongsByTitle(): Flow<List<Song>> {
         return songDao.getSongsByTitle().map { entities ->
-            entities.map { it.toDomain() }
-        }
-    }
-
-    override fun getSongsByNumber(): Flow<List<Song>> {
-        return songDao.getSongsByNumber().map { entities ->
             entities.map { it.toDomain() }
         }
     }
@@ -46,12 +34,6 @@ class SongRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun searchSongs(query: String): Flow<List<Song>> {
-        return songDao.searchSongs(query).map { entities ->
-            entities.map { it.toDomain() }
-        }
-    }
-
     override suspend fun isDatabaseEmpty(): Boolean {
         return songDao.getSongsCount() == 0
     }
@@ -62,18 +44,4 @@ class SongRepositoryImpl @Inject constructor(
         songDao.insertAll(entities)
     }
 
-    override suspend fun getCategoriesWithCount(): Map<Category, Int> {
-        return songDao.getAllCategoriesRaw()
-            .flatMap { it.split(",") }
-            .filter { it.isNotBlank() }
-            .mapNotNull { categoryName ->
-                try {
-                    Category.valueOf(categoryName)
-                } catch (e: IllegalArgumentException) {
-                    null
-                }
-            }
-            .groupingBy { it }
-            .eachCount()
-    }
 }

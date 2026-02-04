@@ -118,7 +118,7 @@ fun SongFilterListContent(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(Category.entries.filter { it != Category.INCONNU })  { category ->
+                    items(state.categories) { category ->
                         Button(
                             onClick = { onCategorySelect(category) },
                             modifier

@@ -22,18 +22,28 @@ class SongFilterViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _selectedCategory = MutableStateFlow<Category?>(null)
+    // Liste des catégories à afficher (sans INCONNU)
+    private val displayedCategories = Category.entries.filter { it != Category.INCONNU }
 
-    val uiState: StateFlow<SongFilterUiState> = _selectedCategory.filterNotNull()
+
+    val uiState: StateFlow<SongFilterUiState> = _selectedCategory
         .flatMapLatest { category ->
+            if (category == null) {
+                flowOf(SongFilterUiState(categories = displayedCategories))  // État par défaut = grille
+            } else {
                 getSongsByCategoryUseCase(category).map { songs ->
-                    SongFilterUiState(selectedCategory = category, filteredSongs = songs)
+                    SongFilterUiState(
+                        categories = displayedCategories,
+                        selectedCategory = category,
+                        filteredSongs = songs)
                 }
             }
+        }
 
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = SongFilterUiState()
+            initialValue = SongFilterUiState(categories = displayedCategories)
         )
 
     fun selectCategory(category: Category) {
