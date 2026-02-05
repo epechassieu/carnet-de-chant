@@ -11,8 +11,7 @@ interface UrlMediaUserRepository {
 
     fun getUrlMediaUserBySongId(songId: String): Flow<List<UrlMediaUser>>
 
-    suspend fun addUrlMediaUser(urlMediaUser: UrlMediaUser)
+    suspend fun addUrlMediaUser(urlMediaUser: UrlMediaUser) : Result<Unit>
 
-    suspend fun deleteUrlMediaUser(urlMediaUser: UrlMediaUser)
-
+    suspend fun deleteUrlMediaUser(urlMediaUser: UrlMediaUser) : Result<Unit>
 }

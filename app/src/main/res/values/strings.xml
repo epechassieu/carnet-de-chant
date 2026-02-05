@@ -44,5 +44,9 @@
     <string name="error_server_unavailable">Serveur indisponible (Erreur %1$d).</string> <string name="error_http_client">Fichier introuvable (Erreur %1$d).</string>
     <string name="error_database">Erreur de sauvegarde sur le téléphone.</string>
     <string name="error_unknown">Erreur inattendue : %1$s</string>
+    <string name="url_added">lien ajouté</string>
+    <string name="url_deleted">l\'url est détruite</string>
+    <string name="import_success">carnet importé</string>
+    <string name="error_song_not_found">chant introuvable</string>
 
 </resources>

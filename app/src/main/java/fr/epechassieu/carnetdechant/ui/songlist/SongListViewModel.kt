@@ -1,8 +1,11 @@
 package fr.epechassieu.carnetdechant.ui.songlist
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.domain.usecases.GetSongsByTitleUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SongListViewModel @Inject constructor(
     private val getSongsByTitleUseCase: GetSongsByTitleUseCase,
+    @param:ApplicationContext private val context: Context
 
 ) : ViewModel() {
 
@@ -42,7 +46,7 @@ class SongListViewModel @Inject constructor(
         SongListUiState.Success(filterSongs(songs, query))
     }
         .catch { error ->
-            emit(SongListUiState.Error(error.message ?: "Erreur inconnue"))
+            emit(SongListUiState.Error(context.getString(R.string.error_database)))
         }
         .stateIn(
             scope = viewModelScope,
@@ -59,7 +63,8 @@ class SongListViewModel @Inject constructor(
         if (query.isBlank()) return songs
         return songs.filter {
             it.title.contains(query, ignoreCase = true) ||
-                    it.lyrics.contains(query, ignoreCase = true)
+                    it.lyrics.contains(query, ignoreCase = true) ||
+                    it.number.toString().contains(query)
         }
     }
 }

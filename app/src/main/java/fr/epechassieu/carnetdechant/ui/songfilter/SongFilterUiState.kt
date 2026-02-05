@@ -13,5 +13,6 @@ import fr.epechassieu.carnetdechant.domain.model.Song
 data class SongFilterUiState (
     val categories: List<Category> = emptyList(),
     val selectedCategory: Category? = null,
-    val filteredSongs: List<Song> = emptyList()
+    val filteredSongs: List<Song> = emptyList(),
+    val error : String? = null
 )

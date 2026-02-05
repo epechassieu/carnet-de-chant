@@ -20,6 +20,6 @@ interface SongRepository {
 
     suspend fun isDatabaseEmpty(): Boolean
 
-    suspend fun loadSongsFromJson() : Result<String>
+    suspend fun loadSongsFromJson() : Result<Int>
 
 }

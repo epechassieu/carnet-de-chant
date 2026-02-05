@@ -1,5 +1,7 @@
 package fr.epechassieu.carnetdechant.ui.listen
 
+import fr.epechassieu.carnetdechant.R
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,10 +9,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
 import fr.epechassieu.carnetdechant.domain.repository.UrlMediaUserRepository
 import fr.epechassieu.carnetdechant.domain.usecases.GetSongByIdUseCase
+import dagger.hilt.android.qualifiers.ApplicationContext
+import fr.epechassieu.carnetdechant.domain.exception.AppException
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,68 +33,85 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ListenViewModel @Inject constructor(
-    private val getSongByIdUseCase: GetSongByIdUseCase,
+    getSongByIdUseCase: GetSongByIdUseCase,
     private val urlMediaUserRepository: UrlMediaUserRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val songId: String = checkNotNull(savedStateHandle["songId"])
 
-    private val _uiState = MutableStateFlow(ListenUiState())
-    val uiState: StateFlow<ListenUiState> = _uiState.asStateFlow()
+    //---local state for error handling ---
+    private val _actionError = MutableStateFlow<String?>(null)
 
-    init {
-        loadData()
-    }
+    // song id and url media
 
-    /**
-     * Loads the song details and associated user media URLs.
-     *
-     * This function launches two concurrent coroutines to:
-     * 1. Fetch the song's basic information (title and official media URL) via [getSongByIdUseCase].
-     * 2. Fetch any custom media URLs provided by the user via [urlMediaUserRepository].
-     *
-     * Updates the [_uiState] with the retrieved data or an error message if the song is not found.
-     */
-    private fun loadData() {
-        viewModelScope.launch {
-            // Charger les infos du chant
-            getSongByIdUseCase(songId).collect { song ->
-                if (song != null) {
-                    _uiState.update {
-                        it.copy(
-                            songTitle = song.title,
-                            officialUrl = song.urlMedia,
-                            isLoading = false
-                        )
-                    }
-                } else {
-                    _uiState.update {
-                        it.copy(error = "Chant introuvable", isLoading = false)
-                    }
-                }
-            }
-        }
-
-        // Charger les liens utilisateur
-        viewModelScope.launch {
-            urlMediaUserRepository.getUrlMediaUserBySongId(songId).collect { urls ->
-                _uiState.update { it.copy(userUrls = urls) }
-            }
+    val uiState: StateFlow<ListenUiState> = combine(
+        getSongByIdUseCase(songId),
+        urlMediaUserRepository.getUrlMediaUserBySongId(songId),
+        _actionError
+    ) { song, userUrls, actionError ->
+        if (song == null) {
+            ListenUiState(error = context.getString(R.string.error_song_not_found), isLoading = false)
+        } else {
+            ListenUiState(
+                songTitle = song.title,
+                officialUrl = song.urlMedia,
+                userUrls = userUrls,
+                error = actionError,
+                isLoading = false
+            )
         }
     }
+        .catch { e ->
+            emit(ListenUiState(error = mapErrorToMessage(e)))
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = ListenUiState(isLoading = true)
+        )
 
     fun addUrl(url: String) {
         if (url.isBlank()) return
+
         viewModelScope.launch {
+            _actionError.value = null
+
             val newUrl = UrlMediaUser(songId = songId, url = url)
             urlMediaUserRepository.addUrlMediaUser(newUrl)
+                .onFailure { error ->
+                    // declanche le combine
+                    _actionError.value = mapErrorToMessage(error)
+                }
         }
     }
 
     fun deleteUrl(urlMediaUser: UrlMediaUser) {
         viewModelScope.launch {
+            _actionError.value = null
+
             urlMediaUserRepository.deleteUrlMediaUser(urlMediaUser)
+                .onFailure { error ->
+                    // declanche le combine
+                    _actionError.value = mapErrorToMessage(error)
+                }
         }
+    }
+
+    private fun mapErrorToMessage(error: Throwable): String {
+        return when (error) {
+            is AppException.DatabaseError -> context.getString(R.string.error_database)
+            is AppException.Unknown -> context.getString(
+                R.string.error_unknown,
+                error.message ?: ""
+            )
+
+            else -> context.getString(R.string.error_unknown, error.message ?: "")
+        }
+    }
+
+    fun clearError() {
+        _actionError.value = null
     }
 }

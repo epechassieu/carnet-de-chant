@@ -1,9 +1,12 @@
 package fr.epechassieu.carnetdechant.ui.songdetail
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.usecases.GetSongByIdUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SongDetailViewModel @Inject constructor(
     private val getSongByIdUseCase: GetSongByIdUseCase,
-    savedStateHandle: SavedStateHandle // C'est magique : ça récupère les arguments de navigation
+    savedStateHandle: SavedStateHandle, // C'est magique : ça récupère les arguments de navigation
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     // On récupère l'ID du chant passé dans l'URL de navigation
@@ -35,7 +39,9 @@ class SongDetailViewModel @Inject constructor(
     val uiState: StateFlow<SongDetailUiState> = getSongByIdUseCase(songId)
 
         .map { song ->
-            if (song != null) SongDetailUiState.Success(song) else SongDetailUiState.Error
+            if (song != null) {
+                SongDetailUiState.Success(song)
+            } else SongDetailUiState.Error(context.getString(R.string.error_song_not_found))
         }
         .stateIn(
             scope = viewModelScope,

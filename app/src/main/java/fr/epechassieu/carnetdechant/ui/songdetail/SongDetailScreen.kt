@@ -140,8 +140,9 @@ fun SongDetailContent(
                 )
 
                 is SongDetailUiState.Error -> Text(
-                    text = stringResource(R.string.song_detail_error),
-                    modifier.align(Alignment.Center)
+                    text = uiState.message,
+                    modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.error
                 )
 
                 is SongDetailUiState.Success -> {

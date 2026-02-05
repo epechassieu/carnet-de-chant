@@ -3,10 +3,12 @@ package fr.epechassieu.carnetdechant.data.repository
 import fr.epechassieu.carnetdechant.data.database.dao.UrlMediaUserDao
 import fr.epechassieu.carnetdechant.data.mapper.toDomain
 import fr.epechassieu.carnetdechant.data.mapper.toEntity
+import fr.epechassieu.carnetdechant.domain.exception.AppException
 import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
 import fr.epechassieu.carnetdechant.domain.repository.UrlMediaUserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.sql.SQLException
 import javax.inject.Inject
 
 /**
@@ -27,11 +29,29 @@ class UrlMediaUserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addUrlMediaUser(urlMediaUser: UrlMediaUser) {
-        urlMediaUserDao.insert(urlMediaUser.toEntity())
+    override suspend fun addUrlMediaUser(urlMediaUser: UrlMediaUser): Result<Unit> {
+        return try {
+            urlMediaUserDao.insert(urlMediaUser.toEntity())
+            Result.success(Unit)
+        } catch (e: Exception) {
+            val appException = when (e) {
+                is SQLException -> AppException.DatabaseError
+                else -> AppException.Unknown(e.message)
+            }
+            Result.failure(appException)
+        }
     }
 
-    override suspend fun deleteUrlMediaUser(urlMediaUser: UrlMediaUser) {
-        urlMediaUserDao.delete(urlMediaUser.toEntity())
+    override suspend fun deleteUrlMediaUser(urlMediaUser: UrlMediaUser): Result<Unit> {
+        return try {
+            urlMediaUserDao.delete(urlMediaUser.toEntity())
+            Result.success(Unit)
+        } catch (e: Exception) {
+            val appException = when (e) {
+                is SQLException -> AppException.DatabaseError
+                else -> AppException.Unknown(e.message)
+            }
+            Result.failure(appException)
+        }
     }
 }

@@ -30,9 +30,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +55,7 @@ import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 
+
 /**
  * Screen that allows users to listen to a song via official and personal media links.
  *
@@ -67,12 +71,24 @@ fun ListenScreen(
     viewModel: ListenViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    /*val context = LocalContext.current*/
+    val snackbarHostState = remember { SnackbarHostState() }
 
+    // --- monitor error ---
+    LaunchedEffect(uiState.error){
+        uiState.error?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            viewModel.clearError()
+        }
+    }
+
+    // --- designer ---
     ListenContent(
         uiState = uiState,
         onBackClick = onBackClick,
         onAddUrl = viewModel::addUrl,
-        onDeleteUrl = viewModel::deleteUrl
+        onDeleteUrl = viewModel::deleteUrl,
+        snackbarHostState = snackbarHostState
     )
 }
 
@@ -94,6 +110,7 @@ fun ListenScreen(
 @Composable
 fun ListenContent(
     uiState: ListenUiState,
+    snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
     onAddUrl: (String) -> Unit,
     onDeleteUrl: (UrlMediaUser) -> Unit
@@ -103,6 +120,7 @@ fun ListenContent(
     var newUrlText by remember { mutableStateOf("") }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState)},
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -132,124 +150,110 @@ fun ListenContent(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            when {
-                uiState.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                uiState.error != null -> {
-                    Text(
-                        text = uiState.error,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp)
-                    ) {
-                        // Section lien officiel
-                        if (!uiState.officialUrl.isNullOrBlank()) {
-                            item {
-                                Text(
-                                    text = stringResource(R.string.listen_official_link),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                LinkCard(
-                                    url = uiState.officialUrl,
-                                    onPlayClick = {
+            if (!uiState.isLoading)
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp)
+                ) {
+                    // Section lien officiel
+                    if (!uiState.officialUrl.isNullOrBlank()) {
+                        item {
+                            Text(
+                                text = stringResource(R.string.listen_official_link),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            LinkCard(
+                                url = uiState.officialUrl,
+                                onPlayClick = {
 /*                                        try {
                                             uriHandler.openUri(uiState.officialUrl)
                                         } catch (e: Exception) {
                                             e.printStackTrace()
                                         }*/
-                                        openUrlSafe(context,uriHandler, uiState.officialUrl)
-
-                                    },
-                                    onDeleteClick = null // Pas de suppression pour le lien officiel
-                                )
-                                Spacer(modifier = Modifier.height(24.dp))
-                            }
-                        }
-
-                        // Section liens utilisateur
-                        item {
-                            Text(
-                                text = stringResource(R.string.listen_my_links),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-
-                        // Liste des liens utilisateur
-                        items(
-                            items = uiState.userUrls,
-                            key = { it.id }
-                        ) { urlMedia ->
-                            LinkCard(
-                                url = urlMedia.url,
-                                onPlayClick = {
-/*                                    try {
-                                        uriHandler.openUri(urlMedia.url)
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }*/
-                                    openUrlSafe(context,uriHandler, urlMedia.url)
+                                    openUrlSafe(context, uriHandler, uiState.officialUrl)
 
                                 },
-                                onDeleteClick = { onDeleteUrl(urlMedia) }
+                                onDeleteClick = null // Pas de suppression pour le lien officiel
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
                         }
+                    }
 
-                        // Message si aucun lien utilisateur
-                        if (uiState.userUrls.isEmpty()) {
-                            item {
-                                Text(
-                                    text = stringResource(R.string.listen_no_personal_links),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Spacer(modifier = Modifier.height(16.dp))
-                            }
-                        }
+                    // Section liens utilisateur
+                    item {
+                        Text(
+                            text = stringResource(R.string.listen_my_links),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
 
-                        // Zone d'ajout de lien
+                    // Liste des liens utilisateur
+                    items(
+                        items = uiState.userUrls,
+                        key = { it.id }
+                    ) { urlMedia ->
+                        LinkCard(
+                            url = urlMedia.url,
+                            onPlayClick = {
+                                openUrlSafe(context, uriHandler, urlMedia.url)
+
+                            },
+                            onDeleteClick = { onDeleteUrl(urlMedia) }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    // Message si aucun lien utilisateur
+                    if (uiState.userUrls.isEmpty()) {
                         item {
+                            Text(
+                                text = stringResource(R.string.listen_no_personal_links),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                             Spacer(modifier = Modifier.height(16.dp))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                        }
+                    }
+
+                    // Zone d'ajout de lien
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            OutlinedTextField(
+                                value = newUrlText,
+                                onValueChange = { newUrlText = it },
+                                modifier = Modifier.weight(1f),
+                                placeholder = { Text(stringResource(R.string.listen_add_placeholder)) },
+                                singleLine = true,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Button(
+                                onClick = {
+                                    onAddUrl(newUrlText)
+                                    newUrlText = ""
+                                },
+                                enabled = newUrlText.isNotBlank()
                             ) {
-                                OutlinedTextField(
-                                    value = newUrlText,
-                                    onValueChange = { newUrlText = it },
-                                    modifier = Modifier.weight(1f),
-                                    placeholder = { Text(stringResource(R.string.listen_add_placeholder)) },
-                                    singleLine = true,
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Button(
-                                    onClick = {
-                                        onAddUrl(newUrlText)
-                                        newUrlText = ""
-                                    },
-                                    enabled = newUrlText.isNotBlank()
-                                ) {
-                                    Icon(Icons.Default.Add, contentDescription = null)
-                                }
+                                Icon(Icons.Default.Add, contentDescription = null)
                             }
                         }
                     }
                 }
-            }
+        }
+        if (uiState.isLoading) {
+            CircularProgressIndicator()
         }
     }
 }
+
 
 @Composable
 private fun LinkCard(
@@ -304,12 +308,13 @@ private fun LinkCard(
 // --- try catch for Open Url.---
 
 fun openUrlSafe(context: Context, uriHandler: UriHandler, url: String) {
-    if (url.isBlank()) return // Sécurité bonus
+    if (url.isBlank()) return
 
     try {
         uriHandler.openUri(url)
     } catch (e: Exception) {
-        Toast.makeText(context, context.getString(R.string.error_link_open), Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, context.getString(R.string.error_link_open), Toast.LENGTH_SHORT)
+            .show()
         e.printStackTrace()
     }
 }
@@ -331,7 +336,8 @@ fun ListenContentPreview() {
             uiState = fakeState,
             onBackClick = {},
             onAddUrl = {},
-            onDeleteUrl = {}
+            onDeleteUrl = {},
+            snackbarHostState = SnackbarHostState()
         )
     }
 }
