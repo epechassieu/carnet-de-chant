@@ -12,7 +12,7 @@ import javax.inject.Inject
 class LoadSongsFromJsonUseCase @Inject constructor(
     private val songRepository: SongRepository
 ) {
-    suspend operator fun invoke() {
-        songRepository.loadSongsFromJson()
+    suspend operator fun invoke() : Result<Int> {
+        return songRepository.loadSongsFromJson()
     }
 }

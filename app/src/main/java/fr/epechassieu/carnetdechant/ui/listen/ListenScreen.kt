@@ -109,6 +109,7 @@ fun ListenScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListenContent(
+    modifier: Modifier = Modifier,
     uiState: ListenUiState,
     snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
@@ -120,6 +121,7 @@ fun ListenContent(
     var newUrlText by remember { mutableStateOf("") }
 
     Scaffold(
+        modifier = modifier,
         snackbarHost = { SnackbarHost(snackbarHostState)},
         topBar = {
             CenterAlignedTopAppBar(
@@ -146,13 +148,13 @@ fun ListenContent(
         }
     ) { innerPadding ->
         Box(
-            modifier = Modifier
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
             if (!uiState.isLoading)
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     // Section lien officiel
@@ -163,7 +165,7 @@ fun ListenContent(
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(Modifier.height(8.dp))
                             LinkCard(
                                 url = uiState.officialUrl,
                                 onPlayClick = {
@@ -177,7 +179,7 @@ fun ListenContent(
                                 },
                                 onDeleteClick = null // Pas de suppression pour le lien officiel
                             )
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(Modifier.height(24.dp))
                         }
                     }
 
@@ -188,7 +190,7 @@ fun ListenContent(
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(Modifier.height(8.dp))
                     }
 
                     // Liste des liens utilisateur
@@ -204,7 +206,7 @@ fun ListenContent(
                             },
                             onDeleteClick = { onDeleteUrl(urlMedia) }
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(Modifier.height(8.dp))
                     }
 
                     // Message si aucun lien utilisateur
@@ -215,26 +217,26 @@ fun ListenContent(
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(Modifier.height(16.dp))
                         }
                     }
 
                     // Zone d'ajout de lien
                     item {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(Modifier.height(16.dp))
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             OutlinedTextField(
                                 value = newUrlText,
                                 onValueChange = { newUrlText = it },
-                                modifier = Modifier.weight(1f),
+                                Modifier.weight(1f),
                                 placeholder = { Text(stringResource(R.string.listen_add_placeholder)) },
                                 singleLine = true,
                                 shape = RoundedCornerShape(12.dp)
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(Modifier.width(8.dp))
                             Button(
                                 onClick = {
                                     onAddUrl(newUrlText)
@@ -257,18 +259,19 @@ fun ListenContent(
 
 @Composable
 private fun LinkCard(
+    modifier: Modifier = Modifier,
     url: String,
     onPlayClick: () -> Unit,
     onDeleteClick: (() -> Unit)?
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Row(
-            modifier = Modifier
+            Modifier
                 .padding(12.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -276,7 +279,7 @@ private fun LinkCard(
             // URL (tronquée si trop longue)
             Text(
                 text = url,
-                modifier = Modifier.weight(1f),
+                Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

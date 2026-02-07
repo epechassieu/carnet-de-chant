@@ -35,7 +35,7 @@ class SongFilterViewModel @Inject constructor(
     val uiState: StateFlow<SongFilterUiState> = _selectedCategory
         .flatMapLatest { category ->
             if (category == null) {
-                // Si aucune catégorie n'est sélectionnée, afficher la grille par défaut
+                // use for clickback to return at initial grid
                 flowOf(SongFilterUiState(categories = displayedCategories))
             } else {
                 getSongsByCategoryUseCase(category).map { songs ->

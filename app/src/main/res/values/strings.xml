@@ -29,7 +29,7 @@
     <string name="listen">ajout lien youtube</string>
     <string name="loading">Chargement</string>
 <!--listen -->
-    <string name="listen_official_link">Lien base</string>
+    <string name="listen_official_link">Lien du carnet</string>
     <string name="listen_my_links">Mes liens</string>
     <string name="listen_no_personal_links">Aucun lien personnel ajouté.</string>
     <string name="listen_add_placeholder">Coller un lien YouTube, Spotify...</string>

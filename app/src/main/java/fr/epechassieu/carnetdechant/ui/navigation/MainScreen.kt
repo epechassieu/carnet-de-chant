@@ -61,6 +61,7 @@ fun MainScreen(modifier : Modifier = Modifier) {
     val showBars = currentRoute in listOf(Routes.LIST, Routes.IMPORT)
 
     Scaffold(
+        modifier=modifier,
         topBar = {
             if (showBars) {
                 CenterAlignedTopAppBar(
@@ -114,7 +115,7 @@ fun MainScreen(modifier : Modifier = Modifier) {
         NavHost(
             navController = navController,
             startDestination = Routes.LIST,
-            modifier.padding(innerPadding)
+            Modifier.padding(innerPadding)
         ) {
             // Liste des chants
             composable(Routes.LIST) {

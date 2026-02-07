@@ -9,10 +9,10 @@ import javax.inject.Inject
  *
  * @property urlMediaUserRepository The repository interface used to persist the media URL data.
  */
-class AddUrlMediaUserUseCase @Inject constructor(
+class DeleteUrlMediaUserUseCase @Inject constructor(
     private val urlMediaUserRepository: UrlMediaUserRepository
 ) {
     suspend operator fun invoke(urlMediaUser: UrlMediaUser) : Result<Unit> {
-        return urlMediaUserRepository.addUrlMediaUser(urlMediaUser)
+        return urlMediaUserRepository.deleteUrlMediaUser(urlMediaUser)
     }
 }

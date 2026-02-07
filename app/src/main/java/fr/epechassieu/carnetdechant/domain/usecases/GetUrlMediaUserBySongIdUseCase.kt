@@ -13,7 +13,7 @@ import javax.inject.Inject
 class GetUrlMediaUserBySongIdUseCase @Inject constructor(
     private val urlMediaUserRepository: UrlMediaUserRepository
 ) {
-    operator fun invoke(chantId: String): Flow<List<UrlMediaUser>> {
-        return urlMediaUserRepository.getUrlMediaUserBySongId(chantId)
+    operator fun invoke(songId: String): Flow<List<UrlMediaUser>> {
+        return urlMediaUserRepository.getUrlMediaUserBySongId(songId)
     }
 }

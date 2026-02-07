@@ -101,6 +101,7 @@ fun SongDetailContent(
     val uriHandler = LocalUriHandler.current
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -130,18 +131,18 @@ fun SongDetailContent(
         }
     ) { innerPadding ->
         Box(
-            modifier
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
             when (val state = uiState) {
                 is SongDetailUiState.Loading -> CircularProgressIndicator(
-                    modifier.align(Alignment.Center)
+                    Modifier.align(Alignment.Center)
                 )
 
                 is SongDetailUiState.Error -> Text(
                     text = uiState.message,
-                    modifier.align(Alignment.Center),
+                    Modifier.align(Alignment.Center),
                     color = MaterialTheme.colorScheme.error
                 )
 
@@ -150,11 +151,10 @@ fun SongDetailContent(
 
                     // --- LE CONTENU DU CHANT ---
                     Column(
-                        modifier
+                        Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                             .verticalScroll(rememberScrollState()) // ,Permet de scroller
-                        //horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
                         // Recueil, numero et categories
@@ -177,14 +177,13 @@ fun SongDetailContent(
                                         try {
                                             uriHandler.openUri(song.urlMedia)
                                         } catch (e: Exception) {
-                                            // mettre un message lien cassé ou autre
                                             e.printStackTrace()
                                         }
                                     },
                                     shape = MaterialTheme.shapes.medium
                                 ) {
                                     Icon(Icons.Default.PlayArrow, contentDescription = null)
-                                    Spacer(modifier.width(8.dp))
+                                    Spacer(Modifier.width(8.dp))
                                     Text(text = stringResource(R.string.song_detail_button_text))
                                 }
                             }
@@ -194,12 +193,12 @@ fun SongDetailContent(
                                 shape = MaterialTheme.shapes.medium
                             ) {
                                 Icon(Icons.Default.Add, contentDescription = null)
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(Modifier.width(8.dp))
                                 Text(text = stringResource(R.string.song_detail_add_audio))
                             }
                         }
 
-                        Spacer(modifier.height(24.dp))
+                        Spacer(Modifier.height(24.dp))
 
                         // Paroles
                         Text(
@@ -211,7 +210,7 @@ fun SongDetailContent(
 
 
                         // Espace pour ne pas être collé au bas de l'écran
-                        Spacer(modifier.height(64.dp))
+                        Spacer(Modifier.height(64.dp))
                     }
                 }
             }
