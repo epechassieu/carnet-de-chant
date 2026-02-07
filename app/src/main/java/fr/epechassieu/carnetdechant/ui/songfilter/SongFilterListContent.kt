@@ -102,6 +102,7 @@ fun SongFilterListContent(
     }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             // LA BARRE DU HAUT CHANGE SELON L'ÉTAT
             if (state.selectedCategory != null) {
@@ -130,17 +131,18 @@ fun SongFilterListContent(
     ) { innerPadding ->
 
         Box(
-            modifier
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-        ) {
+        )
+        {
 
             // --- CONDITION D'AFFICHAGE ---
             if (state.selectedCategory == null) {
                 // VUE A : LA GRILLE DES CATEGORIES
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    modifier.fillMaxSize(),
+                    Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -148,14 +150,14 @@ fun SongFilterListContent(
                     items(state.categories) { category ->
                         Button(
                             onClick = { onCategorySelect(category) },
-                            modifier
+                            Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp),
                             shape = MaterialTheme.shapes.medium
                         ) {
                             Text(
                                 text = category.libelle,
-                                modifier.padding(8.dp),
+                                Modifier.padding(8.dp),
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -167,7 +169,7 @@ fun SongFilterListContent(
                 if (state.filteredSongs.isEmpty()) {
                     Text(
                         text = stringResource(R.string.song_filter_is_empty),
-                        modifier.align(Alignment.Center)
+                        Modifier.align(Alignment.Center)
                     )
                 } else {
                     LazyColumn(
@@ -185,9 +187,19 @@ fun SongFilterListContent(
                     }
                 }
             }
+            state.error?.let { error ->
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier=Modifier
+                        .align(Alignment.Center)
+                        .padding (16.dp)
+                )
+            }
         }
     }
 }
+
 
 @Preview(
     showSystemUi = true,
