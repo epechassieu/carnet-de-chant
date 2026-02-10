@@ -3,17 +3,16 @@ package fr.epechassieu.carnetdechant.ui.listen
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -38,9 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -65,17 +62,17 @@ import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
  * @param onBackClick Callback invoked when the user navigates back.
  * @param viewModel The [ListenViewModel] that provides the screen state and handles business logic.
  */
+
 @Composable
 fun ListenScreen(
     onBackClick: () -> Unit,
     viewModel: ListenViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    /*val context = LocalContext.current*/
     val snackbarHostState = remember { SnackbarHostState() }
 
     // --- monitor error ---
-    LaunchedEffect(uiState.error){
+    LaunchedEffect(uiState.error) {
         uiState.error?.let { message ->
             snackbarHostState.showSnackbar(message)
             viewModel.clearError()
@@ -88,6 +85,7 @@ fun ListenScreen(
         onBackClick = onBackClick,
         onAddUrl = viewModel::addUrl,
         onDeleteUrl = viewModel::deleteUrl,
+        onNewUrlTextChange = viewModel::onNewUrlTextChange,
         snackbarHostState = snackbarHostState
     )
 }
@@ -108,21 +106,21 @@ fun ListenScreen(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListenContent(
+private fun ListenContent(
     modifier: Modifier = Modifier,
     uiState: ListenUiState,
     snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
-    onAddUrl: (String) -> Unit,
+    onNewUrlTextChange: (String) -> Unit,
+    onAddUrl: () -> Unit,
     onDeleteUrl: (UrlMediaUser) -> Unit
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
-    var newUrlText by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = modifier,
-        snackbarHost = { SnackbarHost(snackbarHostState)},
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -152,110 +150,92 @@ fun ListenContent(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            if (!uiState.isLoading)
-                LazyColumn(
-                    Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp)
-                ) {
-                    // Section lien officiel
-                    if (!uiState.officialUrl.isNullOrBlank()) {
-                        item {
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+                }
+
+                else -> {
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp)
+                    ) {
+                        //-- section 1 - official url --
+                        if (!uiState.officialUrl.isNullOrBlank()) {
                             Text(
                                 text = stringResource(R.string.listen_official_link),
+                                modifier = Modifier.padding(top=24.dp),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
-                            Spacer(Modifier.height(8.dp))
+
                             LinkCard(
                                 url = uiState.officialUrl,
                                 onPlayClick = {
-/*                                        try {
-                                            uriHandler.openUri(uiState.officialUrl)
-                                        } catch (e: Exception) {
-                                            e.printStackTrace()
-                                        }*/
                                     openUrlSafe(context, uriHandler, uiState.officialUrl)
-
                                 },
-                                onDeleteClick = null // Pas de suppression pour le lien officiel
+                                onDeleteClick = null
                             )
-                            Spacer(Modifier.height(24.dp))
                         }
-                    }
-
-                    // Section liens utilisateur
-                    item {
-                        Text(
-                            text = stringResource(R.string.listen_my_links),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(Modifier.height(8.dp))
-                    }
-
-                    // Liste des liens utilisateur
-                    items(
-                        items = uiState.userUrls,
-                        key = { it.id }
-                    ) { urlMedia ->
-                        LinkCard(
-                            url = urlMedia.url,
-                            onPlayClick = {
-                                openUrlSafe(context, uriHandler, urlMedia.url)
-
-                            },
-                            onDeleteClick = { onDeleteUrl(urlMedia) }
-                        )
-                        Spacer(Modifier.height(8.dp))
-                    }
-
-                    // Message si aucun lien utilisateur
-                    if (uiState.userUrls.isEmpty()) {
-                        item {
+                        // -- section 2 - personal url --
+                        if (uiState.userUrls.isEmpty()) {
                             Text(
                                 text = stringResource(R.string.listen_no_personal_links),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                modifier = Modifier.padding(top=24.dp),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary
                             )
-                            Spacer(Modifier.height(16.dp))
-                        }
-                    }
+                        } else {
+                            Text(
+                                text = stringResource(R.string.listen_my_links),
+                                modifier = Modifier.padding(top=24.dp),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            uiState.userUrls.forEach { urlMedia ->
+                                LinkCard(
+                                    url = urlMedia.url,
+                                    onPlayClick = {
+                                        openUrlSafe(context, uriHandler, urlMedia.url)
+                                    },
+                                    onDeleteClick = { onDeleteUrl(urlMedia) }
+                                )
+                                Spacer(Modifier.height(8.dp))
+                            }
 
-                    // Zone d'ajout de lien
-                    item {
-                        Spacer(Modifier.height(16.dp))
+                        }
+                        // -- section 3 - add url --
+
                         Row(
-                            Modifier.fillMaxWidth(),
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top=24.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+
                             OutlinedTextField(
-                                value = newUrlText,
-                                onValueChange = { newUrlText = it },
-                                Modifier.weight(1f),
+                                value = uiState.newUrlText,
+                                onValueChange = onNewUrlTextChange,
+                                modifier = Modifier.weight(1f),
                                 placeholder = { Text(stringResource(R.string.listen_add_placeholder)) },
                                 singleLine = true,
                                 shape = RoundedCornerShape(12.dp)
                             )
-                            Spacer(Modifier.width(8.dp))
                             Button(
-                                onClick = {
-                                    onAddUrl(newUrlText)
-                                    newUrlText = ""
-                                },
-                                enabled = newUrlText.isNotBlank()
+                                onClick = onAddUrl,
+                                enabled = uiState.newUrlText.isNotBlank()
                             ) {
                                 Icon(Icons.Default.Add, contentDescription = null)
                             }
                         }
                     }
                 }
-        }
-        if (uiState.isLoading) {
-            CircularProgressIndicator()
+            }
         }
     }
 }
-
 
 @Composable
 private fun LinkCard(
@@ -276,7 +256,6 @@ private fun LinkCard(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // URL (tronquée si trop longue)
             Text(
                 text = url,
                 Modifier.weight(1f),
@@ -285,7 +264,6 @@ private fun LinkCard(
                 overflow = TextOverflow.Ellipsis
             )
 
-            // Bouton play
             IconButton(onClick = onPlayClick) {
                 Icon(
                     Icons.Default.PlayArrow,
@@ -294,7 +272,6 @@ private fun LinkCard(
                 )
             }
 
-            // Bouton supprimer (seulement pour les liens utilisateur)
             if (onDeleteClick != null) {
                 IconButton(onClick = onDeleteClick) {
                     Icon(
@@ -308,29 +285,43 @@ private fun LinkCard(
     }
 }
 
+
 // --- try catch for Open Url.---
 
-fun openUrlSafe(context: Context, uriHandler: UriHandler, url: String) {
+private fun openUrlSafe(context: Context, uriHandler: UriHandler, url: String) {
     if (url.isBlank()) return
 
     try {
         uriHandler.openUri(url)
     } catch (e: Exception) {
-        Toast.makeText(context, context.getString(R.string.error_link_open), Toast.LENGTH_SHORT)
+        Toast.makeText(
+            context,
+            context.getString(R.string.error_link_open),
+            Toast.LENGTH_SHORT
+        )
             .show()
         e.printStackTrace()
     }
 }
 
-@Preview(showBackground = true, device = "id:pixel_9")
+
+@Preview(showBackground = true)
 @Composable
-fun ListenContentPreview() {
+private fun ListenContentPreview() {
     val fakeState = ListenUiState(
         songTitle = "Dieu est grand",
         officialUrl = "https://youtube.com/watch?v=123",
         userUrls = listOf(
-            UrlMediaUser(id = 1, songId = "1", url = "https://youtube.com/ma-version"),
-            UrlMediaUser(id = 2, songId = "1", url = "https://spotify.com/autre-lien")
+            UrlMediaUser(
+                id = 1,
+                songId = "1",
+                url = "https://youtube.com/ma-version"
+            ),
+            UrlMediaUser(
+                id = 2,
+                songId = "1",
+                url = "https://spotify.com/autre-lien"
+            )
         ),
         isLoading = false
     )
@@ -340,6 +331,7 @@ fun ListenContentPreview() {
             onBackClick = {},
             onAddUrl = {},
             onDeleteUrl = {},
+            onNewUrlTextChange = {},
             snackbarHostState = SnackbarHostState()
         )
     }

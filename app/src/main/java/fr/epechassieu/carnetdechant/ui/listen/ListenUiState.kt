@@ -16,5 +16,6 @@ data class ListenUiState(
     val userUrls: List<UrlMediaUser> = emptyList(),
     val songTitle: String = "",
     val isLoading: Boolean = true,
-    val error: String? = null
+    val error: String? = null,
+    val newUrlText: String = ""
 )
