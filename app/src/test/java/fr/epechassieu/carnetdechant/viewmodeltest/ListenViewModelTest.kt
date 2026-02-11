@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import fr.epechassieu.carnetdechant.domain.exception.AppException
+import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
 import fr.epechassieu.carnetdechant.domain.usecases.AddUrlMediaUserUseCase
@@ -12,7 +13,6 @@ import fr.epechassieu.carnetdechant.domain.usecases.GetSongByIdUseCase
 import fr.epechassieu.carnetdechant.domain.usecases.GetUrlMediaUserBySongIdUseCase
 import fr.epechassieu.carnetdechant.ui.listen.ListenViewModel
 import fr.epechassieu.carnetdechant.util.MainDispatcherRule
-import fr.epechassieu.carnetdechant.R
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -22,6 +22,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -32,7 +33,7 @@ class ListenViewModelTest {
 
     private lateinit var viewModel: ListenViewModel
 
-    // ---  Mock des dépendances ---
+    // ---  Mock dependancies ---
     private val getSongByIdUseCase: GetSongByIdUseCase = mockk()
     private val getUrlMediaUserBySongIdUseCase: GetUrlMediaUserBySongIdUseCase = mockk()
     private val addUrlMediaUserUseCase: AddUrlMediaUserUseCase = mockk()
@@ -40,51 +41,34 @@ class ListenViewModelTest {
     private val context: Context = mockk()
 
     // --- simulate songId ---
-    private val savedStateHandle = SavedStateHandle(mapOf("songId" to "123"))
+    private val songId = "123"
+    private val savedStateHandle = SavedStateHandle(mapOf("songId" to songId))
 
-    // --- test d'ajout ---
-    @Test
-    fun `addUrl should call use case`() = runTest {
-        every { getSongByIdUseCase("123") } returns flowOf(null)
-        every { getUrlMediaUserBySongIdUseCase("123") } returns flowOf(emptyList())
+    private val mockSong = Song(
+        id = songId,
+        songbook = "JEM",
+        number = 200,
+        title = "chant 200",
+        categories = emptyList(),
+        lyrics = "Paroles du chant",
+        urlMedia = "http://official.com"
+    )
+    private val mockUserUrls = listOf(
+        UrlMediaUser(id = 1, songId = songId, url = "http://user.com")
+    )
 
-        viewModel = ListenViewModel(
-            getSongByIdUseCase,
-            getUrlMediaUserBySongIdUseCase,
-            addUrlMediaUserUseCase,
-            deleteUrlMediaUserUseCase,
-            savedStateHandle,
-            context
-        )
-
-        val newurl = "https://test.com"
-        coEvery { addUrlMediaUserUseCase(any()) } returns Result.success(Unit)
-
-        viewModel.addUrl(newurl)
-
-        coVerify { addUrlMediaUserUseCase(match { it.url == newurl && it.songId == "123" }) }
-    }
-
-    // --- test de l'état final ---
-    @Test
-    fun `uiState combine song, user urls and error correctly`() = runTest {
-        val songId = "123"
-        val mockSong = Song(
-            songId,
-            "JEM",
-            200,
-            "chant 200",
-            emptyList(),
-            "parole chant 200",
-            "http://official.com"
-        )
-        val mockUserUrls = listOf(UrlMediaUser(id = 1, songId = songId, url = "http://user.com"))
-
-
+    @Before
+    fun setup() {
+        // --- mock use cases ---
         every { getSongByIdUseCase(songId) } returns flowOf(mockSong)
         every { getUrlMediaUserBySongIdUseCase(songId) } returns flowOf(mockUserUrls)
+        //--- mock context string ---
+        every { context.getString(any()) } returns "Error message"
+        every { context.getString(any(), any()) } returns "Error message with param"
+    }
 
-        viewModel = ListenViewModel(
+    private fun createViewModel(): ListenViewModel {
+        return ListenViewModel(
             getSongByIdUseCase,
             getUrlMediaUserBySongIdUseCase,
             addUrlMediaUserUseCase,
@@ -92,80 +76,170 @@ class ListenViewModelTest {
             savedStateHandle,
             context
         )
+    }
+
+
+    // --- test UiState ---
+    @Test
+    fun `uiState combine song, user urls and error correctly`() = runTest {
+        viewModel = createViewModel()
 
         // -- then --
         viewModel.uiState.test {
 
-            val finalState = expectMostRecentItem()
-            println("DEBUG finalState est : $finalState")
-            assertEquals("chant 200", finalState.songTitle)
-            assertEquals(mockUserUrls, finalState.userUrls)
-            assertEquals("http://official.com", finalState.officialUrl)
-            assertNull(finalState.error)
-            assertFalse(finalState.isLoading)
+            val state = expectMostRecentItem()
+            println("DEBUG finalState est : $state")
+            assertEquals("chant 200", state.songTitle)
+            assertEquals("http://official.com", state.officialUrl)
+            assertEquals(mockUserUrls, state.userUrls)
+            assertFalse(state.isLoading)
+            assertNull(state.error)
+
         }
     }
 
-    // --- test de suppression ---
     @Test
-    fun `deleteUrl should call use case and clear error`() = runTest {
-        every { getSongByIdUseCase("123") } returns flowOf(null)
-        every { getUrlMediaUserBySongIdUseCase("123") } returns flowOf(emptyList())
-        viewModel = ListenViewModel(
-            getSongByIdUseCase,
-            getUrlMediaUserBySongIdUseCase,
-            addUrlMediaUserUseCase,
-            deleteUrlMediaUserUseCase,
-            savedStateHandle,
-            context
-        )
-        val urlMediaUserToDelete = UrlMediaUser(id = 1, songId = "123", url = "http://test.com")
-        println("DEBUG urlMediaUserToDelete est : $urlMediaUserToDelete")
+    fun `uiState should show error when song not found`() = runTest {
+        every { getSongByIdUseCase(songId) } returns flowOf(null)
+        every { context.getString(R.string.error_song_not_found) } returns "Chant introuvable"
 
-        coEvery { deleteUrlMediaUserUseCase(urlMediaUserToDelete) } returns Result.success(Unit)
-
-        viewModel.deleteUrl(urlMediaUserToDelete)
-
-        coVerify { deleteUrlMediaUserUseCase(urlMediaUserToDelete) }
-
-    }
-
-    // --- la suppression échoue ---
-    @Test
-    fun `deleteUrl failure should set error`() = runTest {
-        val urlToDelete = UrlMediaUser(id = 1, songId = "123", url = "http://test.com")
-        val erroMessage = "Error Database"
-
-        every { getSongByIdUseCase("123") } returns flowOf(null)
-        every { getUrlMediaUserBySongIdUseCase("123") } returns flowOf(emptyList())
-
-        coEvery { deleteUrlMediaUserUseCase(urlToDelete) } returns Result.failure(AppException.DatabaseError)
-        every { context.getString(any()) } returns erroMessage
-
-        viewModel = ListenViewModel(
-            getSongByIdUseCase,
-            getUrlMediaUserBySongIdUseCase,
-            addUrlMediaUserUseCase,
-            deleteUrlMediaUserUseCase,
-            savedStateHandle,
-            context
-        )
+        viewModel = createViewModel()
 
         viewModel.uiState.test {
-            /*val state = expectMostRecentItem()*/
-            val initialstagte=awaitItem()
-            println("DEBUG initialstate est : $initialstagte")
+            val state = expectMostRecentItem()
 
-
-            viewModel.deleteUrl(urlToDelete)
-            val stateError = awaitItem()
-            println("DEBUG state est : $stateError")
-
-            assertEquals(erroMessage, stateError.error)
+            assertEquals("Chant introuvable", state.error)
+            assertFalse(state.isLoading)
         }
     }
 
+    // --- Tests Add url ---
+    @Test
+    fun `addUrl should call use case with correct data`() = runTest {
 
+        coEvery { addUrlMediaUserUseCase(any()) } returns Result.success(Unit)
+        viewModel = createViewModel()
+
+        viewModel.onNewUrlTextChange("https://new-url.com")
+        viewModel.addUrl()
+
+        coVerify { addUrlMediaUserUseCase(match { it.url == "https://new-url.com" && it.songId == songId }) }
+    }
+
+    @Test
+    fun `addUrl should clear text field on success`() = runTest {
+        coEvery { addUrlMediaUserUseCase(any()) } returns Result.success(Unit)
+        viewModel = createViewModel()
+
+        viewModel.onNewUrlTextChange("https://new-url.com")
+        viewModel.addUrl()
+
+        viewModel.uiState.test {
+            val state = expectMostRecentItem()
+            assertEquals("", state.newUrlText)
+        }
+    }
+
+    @Test
+    fun `addUrl should not call use case when url is blank`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onNewUrlTextChange("")
+        viewModel.addUrl()
+
+        coVerify(exactly = 0) { addUrlMediaUserUseCase(any()) }
+    }
+
+    @Test
+    fun `addUrl should set error on failure`() = runTest {
+        val errorMessage = "Erreur base de données"
+        every { context.getString(R.string.error_database) } returns errorMessage
+        coEvery { addUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError)
+
+        viewModel = createViewModel()
+
+        viewModel.onNewUrlTextChange("https://new-url.com")
+        viewModel.addUrl()
+
+        viewModel.uiState.test {
+            val state = expectMostRecentItem()
+            assertEquals(errorMessage, state.error)
+        }
+    }
+
+    // --- tests delete url ---
+
+    @Test
+    fun `deleteUrl should call use case`() = runTest {
+        coEvery { deleteUrlMediaUserUseCase(any()) } returns Result.success(Unit)
+        viewModel = createViewModel()
+
+        val urlToDelete = UrlMediaUser(id = 1, songId = songId, url = "http://test.com")
+        viewModel.deleteUrl(urlToDelete)
+
+        coVerify { deleteUrlMediaUserUseCase(urlToDelete) }
+    }
+
+    @Test
+    fun `deleteUrl should set error on failure`() = runTest {
+        val errorMessage = "database error"
+        every { context.getString(R.string.error_database) } returns errorMessage
+        coEvery { deleteUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError)
+
+        viewModel = createViewModel()
+
+        val urlToDelete = UrlMediaUser(id = 1, songId = songId, url = "http://test.com")
+        viewModel.deleteUrl(urlToDelete)
+
+        viewModel.uiState.test {
+            val state = expectMostRecentItem()
+            assertEquals(errorMessage, state.error)
+        }
+    }
+
+    // --- Test Clear error ---
+
+    @Test
+    fun `clearError should reset error to null`() = runTest {
+        val errorMessage = "ERROR"
+        every { context.getString(R.string.error_database) } returns errorMessage
+        coEvery { deleteUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError)
+
+        viewModel = createViewModel()
+
+        // cause error
+        val urlToDelete = UrlMediaUser(id = 1, songId = songId, url = "http://test.com")
+        viewModel.deleteUrl(urlToDelete)
+
+        // check error state
+        viewModel.uiState.test {
+            val stateWithError = expectMostRecentItem()
+            println("DEBUG stateWithError est : $stateWithError")
+            assertEquals(errorMessage, stateWithError.error)
+        }
+
+        // clear error
+        viewModel.clearError()
+
+        // check error state null
+        viewModel.uiState.test {
+            val stateCleared = expectMostRecentItem()
+            assertNull(stateCleared.error)
+        }
+    }
+
+    // --- Tests new url text ---
+    @Test
+    fun `onNewUrlTextChange should update newUrlText in state`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onNewUrlTextChange("https://example.com")
+
+        viewModel.uiState.test {
+            val state = expectMostRecentItem()
+            assertEquals("https://example.com", state.newUrlText)
+        }
+    }
 }
 
 

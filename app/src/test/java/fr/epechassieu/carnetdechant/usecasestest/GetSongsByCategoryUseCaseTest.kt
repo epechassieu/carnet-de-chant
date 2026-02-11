@@ -61,7 +61,7 @@ class GetSongsByCategoryUseCaseTest {
     @Test
     fun `invoke with category having songs returns list of songs`() = runTest {
         val category = Category.LOUANGE
-        val expectedSongs = listOf(song1,song2)
+        val expectedSongs = listOf(song1,song2,song3)
         every { songRepository.getSongsByCategory(category) } returns flowOf(expectedSongs)
 
         val result = getSongsByCategoryUseCase.invoke(category).first()

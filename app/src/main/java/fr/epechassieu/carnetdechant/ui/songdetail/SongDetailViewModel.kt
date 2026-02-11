@@ -28,14 +28,14 @@ import javax.inject.Inject
 @HiltViewModel
 class SongDetailViewModel @Inject constructor(
     private val getSongByIdUseCase: GetSongByIdUseCase,
-    savedStateHandle: SavedStateHandle, // C'est magique : ça récupère les arguments de navigation
+    savedStateHandle: SavedStateHandle,
     @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    // On récupère l'ID du chant passé dans l'URL de navigation
+    // retrieve Id from navigation argument
     private val songId: String = checkNotNull(savedStateHandle["songId"])
 
-    // On transforme le Flow<Song?> en Flow<SongDetailUiState>
+    // transform Flow<Song?> into Flow<SongDetailUiState>
     val uiState: StateFlow<SongDetailUiState> = getSongByIdUseCase(songId)
 
         .map { song ->

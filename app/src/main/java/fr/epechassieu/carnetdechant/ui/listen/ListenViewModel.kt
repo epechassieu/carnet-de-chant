@@ -11,6 +11,9 @@ import fr.epechassieu.carnetdechant.domain.repository.UrlMediaUserRepository
 import fr.epechassieu.carnetdechant.domain.usecases.GetSongByIdUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import fr.epechassieu.carnetdechant.domain.exception.AppException
+import fr.epechassieu.carnetdechant.domain.usecases.AddUrlMediaUserUseCase
+import fr.epechassieu.carnetdechant.domain.usecases.DeleteUrlMediaUserUseCase
+import fr.epechassieu.carnetdechant.domain.usecases.GetUrlMediaUserBySongIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -33,33 +36,39 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ListenViewModel @Inject constructor(
-    getSongByIdUseCase: GetSongByIdUseCase,
-    private val urlMediaUserRepository: UrlMediaUserRepository,
+    private val getSongByIdUseCase: GetSongByIdUseCase,
+    private val getUrlMediaUserBySongIdUseCase: GetUrlMediaUserBySongIdUseCase,
+    private val addUrlMediaUserUseCase: AddUrlMediaUserUseCase,
+    private val deleteUrlMediaUserUseCase: DeleteUrlMediaUserUseCase,
     savedStateHandle: SavedStateHandle,
-    @param:ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val songId: String = checkNotNull(savedStateHandle["songId"])
-
-    //---local state for error handling ---
     private val _actionError = MutableStateFlow<String?>(null)
+    private val _newUrlText = MutableStateFlow("")
 
     // song id and url media
 
     val uiState: StateFlow<ListenUiState> = combine(
         getSongByIdUseCase(songId),
-        urlMediaUserRepository.getUrlMediaUserBySongId(songId),
-        _actionError
-    ) { song, userUrls, actionError ->
+        getUrlMediaUserBySongIdUseCase(songId),
+        _actionError,
+        _newUrlText
+    ) { song, userUrls, actionError, newUrlText ->
         if (song == null) {
-            ListenUiState(error = context.getString(R.string.error_song_not_found), isLoading = false)
+            ListenUiState(
+                error = context.getString(R.string.error_song_not_found),
+                isLoading = false
+            )
         } else {
             ListenUiState(
                 songTitle = song.title,
                 officialUrl = song.urlMedia,
                 userUrls = userUrls,
                 error = actionError,
-                isLoading = false
+                isLoading = false,
+                newUrlText = newUrlText
             )
         }
     }
@@ -72,16 +81,23 @@ class ListenViewModel @Inject constructor(
             initialValue = ListenUiState(isLoading = true)
         )
 
-    fun addUrl(url: String) {
+    fun onNewUrlTextChange(text: String) {
+        _newUrlText.value = text
+    }
+
+    fun addUrl() {
+        val url = _newUrlText.value
         if (url.isBlank()) return
 
         viewModelScope.launch {
             _actionError.value = null
 
             val newUrl = UrlMediaUser(songId = songId, url = url)
-            urlMediaUserRepository.addUrlMediaUser(newUrl)
+            addUrlMediaUserUseCase(newUrl)
+                .onSuccess {
+                    _newUrlText.value = ""
+                }
                 .onFailure { error ->
-                    // declanche le combine
                     _actionError.value = mapErrorToMessage(error)
                 }
         }
@@ -91,9 +107,8 @@ class ListenViewModel @Inject constructor(
         viewModelScope.launch {
             _actionError.value = null
 
-            urlMediaUserRepository.deleteUrlMediaUser(urlMediaUser)
+            deleteUrlMediaUserUseCase(urlMediaUser)
                 .onFailure { error ->
-                    // declanche le combine
                     _actionError.value = mapErrorToMessage(error)
                 }
         }

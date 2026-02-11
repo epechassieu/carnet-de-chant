@@ -46,7 +46,7 @@ class AddUrlMediaUserUseCaseTest {
         val urlItem = UrlMediaUser(id = 1, songId = "1", url = "http://test.com")
         val expectedError = AppException.DatabaseError
 
-        // On simule un échec avec ton exception personnalisée
+        //  simule un échec avec  exception personnalisée
         coEvery { urlMediaUserRepository.addUrlMediaUser(urlItem) } returns Result.failure(expectedError)
 
         // WHEN
