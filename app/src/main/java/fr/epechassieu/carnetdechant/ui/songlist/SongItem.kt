@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
+import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 
 /**
  * A composable that represents a single item in the song list.
@@ -30,13 +31,13 @@ import fr.epechassieu.carnetdechant.domain.model.Song
  */
 @Composable
 fun SongItem(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     song: Song,
     onClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(
@@ -44,13 +45,12 @@ fun SongItem(
         )
     ) {
         Row(
-            modifier
+            Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Partie Gauche : Textes
-            Column(modifier.weight(1f)) {
+            Column(Modifier.weight(1f)) {
                 Text(
                     text = song.title,
                     style = MaterialTheme.typography.titleMedium,
@@ -63,7 +63,6 @@ fun SongItem(
                 )
             }
 
-            // Partie Droite : Flèche
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
@@ -73,15 +72,28 @@ fun SongItem(
     }
 }
 
-@Preview(showSystemUi=true,showBackground = true)
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun SongItemPreview() {
     val fakeSongs = listOf(
-        Song(id = "1", songbook = "JEM", number = 100, title = "Dieu est grand", categories = listOf(Category.LOUANGE), lyrics = "Test", urlMedia = ""),
-        Song(id = "2", songbook = "ATG", number = 42, title = "Jésus t'aime", categories = listOf(
-            Category.ADORATION), lyrics = "Test", urlMedia = "")
+        Song(
+            id = "1",
+            songbook = "JEM",
+            number = 100,
+            title = "Dieu est grand",
+            categories = listOf(Category.LOUANGE),
+            lyrics = "Test",
+            urlMedia = ""
+        ),
+        Song(
+            id = "2", songbook = "ATG", number = 42, title = "Jésus t'aime", categories = listOf(
+                Category.ADORATION
+            ), lyrics = "Test", urlMedia = ""
+        )
     )
-    SongItem(song = fakeSongs[0], onClick = {})
+    CarnetDeChantTheme {
+        SongItem(song = fakeSongs[0], onClick = {})
+    }
 }
 
 

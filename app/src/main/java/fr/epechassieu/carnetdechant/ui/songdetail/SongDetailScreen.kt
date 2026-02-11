@@ -149,28 +149,30 @@ fun SongDetailContent(
                 is SongDetailUiState.Success -> {
                     val song = state.song
 
-                    // --- LE CONTENU DU CHANT ---
+                    // --- lyrics ---
                     Column(
                         Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
-                            .verticalScroll(rememberScrollState()) // ,Permet de scroller
+                            .padding(start=16.dp, end=16.dp, top=16.dp, bottom=64.dp)
+                            .verticalScroll(rememberScrollState())
                     ) {
 
-                        // Recueil, numero et categories
+                        // -- infos song --
                         Text(
                             text = "${song.songbook} n°${song.number} | ${song.categories.joinToString { it.libelle }}",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.primary
                         )
 
-                        Spacer(modifier.height(8.dp))
+                        // -- buttons --
 
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // lien officiel
+                            // - offical url -
                             if (!song.urlMedia.isNullOrBlank()) {
                                 Button(
                                     onClick = {
@@ -187,7 +189,7 @@ fun SongDetailContent(
                                     Text(text = stringResource(R.string.song_detail_button_text))
                                 }
                             }
-                            // Bouton ajouter un audio
+                            // - add url -
                             OutlinedButton(
                                 onClick = onListenClick,
                                 shape = MaterialTheme.shapes.medium
@@ -198,19 +200,15 @@ fun SongDetailContent(
                             }
                         }
 
-                        Spacer(Modifier.height(24.dp))
-
-                        // Paroles
+                        // -- lyrics --
                         Text(
                             text = song.lyrics,
+                            modifier = Modifier.padding(top = 24.dp),
                             style = MaterialTheme.typography.bodyLarge,
                             lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.5, // Plus aéré
                             textAlign = TextAlign.Start // Ou Start selon les goûts
                         )
 
-
-                        // Espace pour ne pas être collé au bas de l'écran
-                        Spacer(Modifier.height(64.dp))
                     }
                 }
             }

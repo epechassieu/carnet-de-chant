@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -58,7 +57,6 @@ fun SongFilterListScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    // On passe juste les données et les actions au composant "bête"
     SongFilterListContent(
         state = state,
         onSongClick = onSongClick,
@@ -87,16 +85,13 @@ fun SongFilterListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongFilterListContent(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     state: SongFilterUiState,
     onSongClick: (String) -> Unit,
     onCategorySelect: (Category) -> Unit,
     onClearSelection: () -> Unit
 ) {
 
-    // GESTION DU BOUTON RETOUR PHYSIQUE D'ANDROID
-    // Si on est dans la liste (category != null), le bouton retour efface la sélection
-    // pour revenir à la grille, au lieu de quitter l'application.
     BackHandler(enabled = state.selectedCategory != null) {
         onClearSelection()
     }
@@ -104,14 +99,15 @@ fun SongFilterListContent(
     Scaffold(
         modifier = modifier,
         topBar = {
-            // LA BARRE DU HAUT CHANGE SELON L'ÉTAT
             if (state.selectedCategory != null) {
-                // Écran 2 : Titre de la catégorie (ex: "Louange") + Flèche retour
                 CenterAlignedTopAppBar(
                     title = { Text(state.selectedCategory.libelle) },
                     navigationIcon = {
                         IconButton(onClick = onClearSelection) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.song_backclic))
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.song_backclic)
+                            )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -119,9 +115,8 @@ fun SongFilterListContent(
                     )
                 )
             } else {
-                // VUE GRILLE : Titre générique
                 CenterAlignedTopAppBar(
-                    title = { Text(text=stringResource(R.string.song_filter_title_theme)) },
+                    title = { Text(text = stringResource(R.string.song_filter_title_theme)) },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -134,15 +129,13 @@ fun SongFilterListContent(
             Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-        )
-        {
-
-            // --- CONDITION D'AFFICHAGE ---
+        ) {
+            // -- displays views
             if (state.selectedCategory == null) {
-                // VUE A : LA GRILLE DES CATEGORIES
+                // - categories grid -
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -165,7 +158,7 @@ fun SongFilterListContent(
                 }
 
             } else {
-                // VUE B : LA LISTE DES CHANTS FILTRÉS
+                // - filtered song -
                 if (state.filteredSongs.isEmpty()) {
                     Text(
                         text = stringResource(R.string.song_filter_is_empty),
@@ -176,8 +169,8 @@ fun SongFilterListContent(
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         items(
-                            items =state.filteredSongs,
-                            key = {it.id} // pour éviter de tout recomposer quand la liste change id et pas position
+                            items = state.filteredSongs,
+                            key = { it.id }
                         ) { song ->
                             SongItem(
                                 song = song,
@@ -191,9 +184,9 @@ fun SongFilterListContent(
                 Text(
                     text = error,
                     color = MaterialTheme.colorScheme.error,
-                    modifier=Modifier
+                    modifier = Modifier
                         .align(Alignment.Center)
-                        .padding (16.dp)
+                        .padding(16.dp)
                 )
             }
         }
@@ -204,8 +197,7 @@ fun SongFilterListContent(
 @Preview(
     showSystemUi = true,
     showBackground = true,
-    name = "1 vue grille theme",
-    device = "id:pixel_9"
+    name = "1 vue grille theme"
 )
 @Composable
 fun PreviewFilterGruid() {
@@ -213,7 +205,7 @@ fun PreviewFilterGruid() {
         SongFilterListContent(
             state = SongFilterUiState(selectedCategory = null, filteredSongs = emptyList()),
             onSongClick = {},
-            onCategorySelect= {},
+            onCategorySelect = {},
             onClearSelection = {}
         )
     }
@@ -223,8 +215,7 @@ fun PreviewFilterGruid() {
 @Preview(
     showSystemUi = true,
     showBackground = true,
-    name = "2 vue liste selon theme",
-    device = "id:pixel_9"
+    name = "2 vue liste selon theme"
 )
 @Composable
 fun PreviewFilterList() {

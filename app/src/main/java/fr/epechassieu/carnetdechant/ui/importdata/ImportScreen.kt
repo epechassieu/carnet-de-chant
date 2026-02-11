@@ -53,36 +53,35 @@ fun ImportScreen(
         Icon(
             imageVector = Icons.Default.Warning,
             contentDescription = null,
-            modifier.size(64.dp),
+            modifier = Modifier.size(64.dp),
             tint = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier.height(24.dp))
-
         Text(
             text = stringResource(R.string.import_title),
+            modifier=Modifier.padding(top = 24.dp),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier.height(16.dp))
-
         Text(
             text = stringResource(R.string.import_message),
+            modifier= Modifier.padding(top = 16.dp),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
 
-        Spacer(modifier.height(32.dp))
-
         when (importState) {
             is ImportDataUiState.Loading -> {
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(top = 32.dp)
+                )
             }
             is ImportDataUiState.Error -> {
                 Text(
                     text = stringResource(R.string.import_error_message, importState.message),
+                    modifier = Modifier.padding(top = 32.dp),
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center
                 )
@@ -94,10 +93,10 @@ fun ImportScreen(
             else -> {
                 Button(
                     onClick = onImportClick,
-                    modifier.fillMaxWidth()
+                    modifier = Modifier.padding(32.dp)
                 ) {
                     Icon(Icons.Default.Download, contentDescription = null)
-                    Spacer(modifier.width(8.dp))
+                    Spacer(Modifier.width(8.dp))
                     Text(text= stringResource(R.string.import_button_text))
                 }
             }

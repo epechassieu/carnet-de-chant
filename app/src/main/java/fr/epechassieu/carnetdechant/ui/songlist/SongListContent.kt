@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
+import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 
 /**
  * A Composable that displays the main content of the song list screen.
@@ -40,7 +41,7 @@ import fr.epechassieu.carnetdechant.domain.model.Song
  */
 @Composable
 fun SongListContent(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     state: SongListUiState,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
@@ -48,14 +49,14 @@ fun SongListContent(
 ) {
     Column(modifier.fillMaxSize()) {
 
-        // 1. Zone de Recherche
+        // -- query --
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
-            modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            placeholder = { Text(text=stringResource(R.string.song_listcontent_outlinedeextfield_placeholder)) },
+            placeholder = { Text(text = stringResource(R.string.song_listcontent_outlinedeextfield_placeholder)) },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
@@ -71,25 +72,30 @@ fun SongListContent(
             shape = RoundedCornerShape(24.dp)
         )
 
-        // 2. La Liste (pilotée par l'état)
-        Box(modifier.fillMaxSize()) {
+        // -- items --
+        Box(Modifier.fillMaxSize()) {
             when (state) {
                 is SongListUiState.Loading -> {
-                    CircularProgressIndicator(modifier.align(Alignment.Center))
+                    CircularProgressIndicator(Modifier.align(Alignment.Center))
                 }
+
                 is SongListUiState.Error -> {
                     Text(
-                        text = stringResource(R.string.song_listcontent_error_message, state.message),
-                        modifier.align(Alignment.Center),
+                        text = stringResource(
+                            R.string.song_listcontent_error_message,
+                            state.message
+                        ),
+                        modifier = Modifier.align(Alignment.Center),
                         color = MaterialTheme.colorScheme.error
                     )
                 }
+
                 is SongListUiState.Success -> {
                     if (state.songs.isEmpty()) {
 
                         val emptyMessage = if (searchQuery.isBlank()) {
                             stringResource(R.string.song_listcontent_empty_database)
-                        }  else {
+                        } else {
                             stringResource(R.string.song_list_no_search_results)
                         }
 
@@ -102,8 +108,8 @@ fun SongListContent(
                     } else {
                         LazyColumn {
                             items(
-                                items =state.songs,
-                                key = {it.id} // pour éviter de tout recomposer quand la liste change id et pas position
+                                items = state.songs,
+                                key = { it.id } // pour éviter de tout recomposer quand la liste change id et pas position
                             ) { song ->
                                 SongItem(
                                     song = song,
@@ -128,14 +134,23 @@ fun SongListContentPreview() {
                 Category.LOUANGE
             ), lyrics = "Test", urlMedia = ""
         ),
-        Song(id = "2", songbook = "ATG", number = 42, title = "Jésus t'aime", categories = listOf(Category.ADORATION), lyrics = "Test", urlMedia = "")
+        Song(
+            id = "2",
+            songbook = "ATG",
+            number = 42,
+            title = "Jésus t'aime",
+            categories = listOf(Category.ADORATION),
+            lyrics = "Test",
+            urlMedia = ""
+        )
     )
 
-
-    SongListContent(
-        state = SongListUiState.Success(fakeSongs),
-        searchQuery = "Recherche...",
-        onSearchQueryChange = {},
-        onSongClick = {}
-    )
+    CarnetDeChantTheme {
+        SongListContent(
+            state = SongListUiState.Success(fakeSongs),
+            searchQuery = "",
+            onSearchQueryChange = {},
+            onSongClick = {}
+        )
+    }
 }

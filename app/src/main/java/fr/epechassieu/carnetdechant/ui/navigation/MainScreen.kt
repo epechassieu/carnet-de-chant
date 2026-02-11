@@ -37,6 +37,7 @@ import fr.epechassieu.carnetdechant.ui.importdata.ImportDataUiState
 import fr.epechassieu.carnetdechant.ui.listen.ListenScreen
 import fr.epechassieu.carnetdechant.ui.songdetail.SongDetailScreen
 import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListScreen
+import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 
 /**
  * The main entry point for the application's user interface, managing the primary navigation
@@ -52,20 +53,19 @@ import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListScreen
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(modifier : Modifier = Modifier) {
+fun MainScreen(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    // Écrans qui affichent la TopAppBar
     val showBars = currentRoute in listOf(Routes.LIST, Routes.IMPORT)
 
     Scaffold(
-        modifier=modifier,
+        modifier = modifier,
         topBar = {
             if (showBars) {
                 CenterAlignedTopAppBar(
-                    title = { Text(text=stringResource(R.string.main_topbar_title)) },
+                    title = { Text(text = stringResource(R.string.main_topbar_title)) },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -74,11 +74,10 @@ fun MainScreen(modifier : Modifier = Modifier) {
             }
         },
         bottomBar = {
-            // BottomBar toujours visible
             NavigationBar {
                 NavigationBarItem(
                     icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Liste") },
-                    label = { Text(text=stringResource(R.string.main_bottom_bar_list)) },
+                    label = { Text(text = stringResource(R.string.main_bottom_bar_list)) },
                     selected = currentRoute == Routes.LIST,
                     onClick = {
                         navController.navigate(Routes.LIST) {
@@ -89,7 +88,7 @@ fun MainScreen(modifier : Modifier = Modifier) {
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.FilterAlt, contentDescription = "Filtres") },
-                    label = { Text(text=stringResource(R.string.main_bottom_bar_filter)) },
+                    label = { Text(text = stringResource(R.string.main_bottom_bar_filter)) },
                     selected = currentRoute == Routes.FILTER,
                     onClick = {
                         navController.navigate(Routes.FILTER) {
@@ -100,7 +99,7 @@ fun MainScreen(modifier : Modifier = Modifier) {
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.Download, contentDescription = "Import") },
-                    label = { Text(text=stringResource(R.string.main_bottom_bar_import)) },
+                    label = { Text(text = stringResource(R.string.main_bottom_bar_import)) },
                     selected = currentRoute == Routes.IMPORT,
                     onClick = {
                         navController.navigate(Routes.IMPORT) {
@@ -115,9 +114,9 @@ fun MainScreen(modifier : Modifier = Modifier) {
         NavHost(
             navController = navController,
             startDestination = Routes.LIST,
-            Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding)
         ) {
-            // Liste des chants
+
             composable(Routes.LIST) {
                 val viewModel: SongListViewModel = hiltViewModel()
                 val state by viewModel.uiState.collectAsState()
@@ -133,9 +132,8 @@ fun MainScreen(modifier : Modifier = Modifier) {
                 )
             }
 
-            // Détail du chant
             composable(
-                Routes.DETAILS,
+                route = Routes.DETAILS,
                 arguments = listOf(navArgument("songId") { type = NavType.StringType })
             ) {
                 SongDetailScreen(
@@ -145,9 +143,9 @@ fun MainScreen(modifier : Modifier = Modifier) {
                     }
                 )
             }
-            // listen (après details)
+
             composable(
-                Routes.LISTEN,
+                route = Routes.LISTEN,
                 arguments = listOf(navArgument("songId") { type = NavType.StringType })
             ) {
                 ListenScreen(
@@ -155,7 +153,6 @@ fun MainScreen(modifier : Modifier = Modifier) {
                 )
             }
 
-            // Filtre par catégorie
             composable(Routes.FILTER) {
                 SongFilterListScreen(
                     onSongClick = { songId ->
@@ -164,12 +161,10 @@ fun MainScreen(modifier : Modifier = Modifier) {
                 )
             }
 
-            // Import
             composable(Routes.IMPORT) {
                 val viewModel: ImportDataViewModel = hiltViewModel()
                 val importState by viewModel.uiState.collectAsState()
 
-                // Navigation automatique après succès
                 LaunchedEffect(importState) {
                     if (importState is ImportDataUiState.Success) {
                         navController.navigate(Routes.LIST)
@@ -181,8 +176,6 @@ fun MainScreen(modifier : Modifier = Modifier) {
                     onImportClick = { viewModel.importSongs() }
                 )
             }
-
-
         }
     }
 }
@@ -190,5 +183,7 @@ fun MainScreen(modifier : Modifier = Modifier) {
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen()
+    CarnetDeChantTheme {
+        MainScreen()
+    }
 }
