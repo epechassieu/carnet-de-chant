@@ -75,7 +75,7 @@ class ImportDataViewModelTest {
         val networkErrorMessage = "Error network"
         coEvery { songRepository.loadSongsFromJson() } coAnswers {
             delay(100)
-            Result.failure(AppException.NetworkError)
+            Result.failure(AppException.NetworkError())
         }
         every { context.getString(R.string.error_network) } returns networkErrorMessage
 

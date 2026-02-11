@@ -2,16 +2,16 @@ package fr.epechassieu.carnetdechant.domain.exception
 
 sealed class AppException : Exception() {
     // network
-    data object NetworkError : Exception()
+    class NetworkError : AppException()
 
     // imports
-    data object FileNotFound : Exception()
-    data object FileCorrupt : Exception()
+    class FileNotFound : AppException()
+    class FileCorrupt : AppException()
     data class HttpClientError(val code: Int) : Exception()
     data class ServerError(val code: Int) : Exception()
 
     //database
-    data object DatabaseError : Exception()
+    class DatabaseError : AppException()
 
     //unknown
     data class Unknown(override val message: String?) : Exception()

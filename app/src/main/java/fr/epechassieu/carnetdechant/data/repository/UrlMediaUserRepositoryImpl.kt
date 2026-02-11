@@ -35,7 +35,7 @@ class UrlMediaUserRepositoryImpl @Inject constructor(
             Result.success(Unit)
         } catch (e: Exception) {
             val appException = when (e) {
-                is SQLException -> AppException.DatabaseError
+                is SQLException -> AppException.DatabaseError()
                 else -> AppException.Unknown(e.message)
             }
             Result.failure(appException)
@@ -48,7 +48,7 @@ class UrlMediaUserRepositoryImpl @Inject constructor(
             Result.success(Unit)
         } catch (e: Exception) {
             val appException = when (e) {
-                is SQLException -> AppException.DatabaseError
+                is SQLException -> AppException.DatabaseError()
                 else -> AppException.Unknown(e.message)
             }
             Result.failure(appException)

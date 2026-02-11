@@ -88,7 +88,7 @@ class ListenViewModelTest {
         viewModel.uiState.test {
 
             val state = expectMostRecentItem()
-            println("DEBUG finalState est : $state")
+
             assertEquals("chant 200", state.songTitle)
             assertEquals("http://official.com", state.officialUrl)
             assertEquals(mockUserUrls, state.userUrls)
@@ -154,7 +154,7 @@ class ListenViewModelTest {
     fun `addUrl should set error on failure`() = runTest {
         val errorMessage = "Error database"
         every { context.getString(R.string.error_database) } returns errorMessage
-        coEvery { addUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError)
+        coEvery { addUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError())
 
         viewModel = createViewModel()
 
@@ -184,7 +184,7 @@ class ListenViewModelTest {
     fun `deleteUrl should set error on failure`() = runTest {
         val errorMessage = "database error"
         every { context.getString(R.string.error_database) } returns errorMessage
-        coEvery { deleteUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError)
+        coEvery { deleteUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError())
 
         viewModel = createViewModel()
 
@@ -203,7 +203,7 @@ class ListenViewModelTest {
     fun `clearError should reset error to null`() = runTest {
         val errorMessage = "ERROR"
         every { context.getString(R.string.error_database) } returns errorMessage
-        coEvery { deleteUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError)
+        coEvery { deleteUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError())
 
         viewModel = createViewModel()
 

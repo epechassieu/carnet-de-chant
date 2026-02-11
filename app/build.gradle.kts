@@ -29,7 +29,7 @@ android {
                 "proguard-rules.pro"
             )
         }
-    }
+            }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -38,6 +38,17 @@ android {
 
     buildFeatures {
         compose = true
+    }
+
+    packaging {
+        resources {
+            // On demande d'exclure les fichiers qui créent le conflit
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
+            // On peut aussi ajouter celle-ci par sécurité
+            excludes += "META-INF/LICENSE*"
+        }
     }
 }
 

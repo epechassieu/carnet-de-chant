@@ -572,7 +572,7 @@ jQuery.cookie = function(name, value, options) {
     <body>
         <div id="container">
             <div id="header">
-                <div class="time" xmlns="">2.20 s</div>
+                <div class="time" xmlns="">2.19 s</div>
                 <h1>
                     Tests in 'fr.epechassieu.carnetdechant': <strong><span class="total" xmlns="http://www.w3.org/1999/xhtml">45 total, </span><span class="passed">45 passed</span></strong>
                 </h1>
@@ -593,19 +593,16 @@ jQuery.cookie = function(name, value, options) {
                 <ul id="tree">
                     <li xmlns="" class="level top open">
                         <span><em class="time">
-                                <div class="time">1.25 s</div>
+                                <div class="time">1.17 s</div>
                             </em>DeleteUrlMediaUserUseCaseTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">1.25 s</div>
+                                        <div class="time">1.17 s</div>
                                     </em><em class="status">passed</em>invoke should return success when repository successfully delete</span>
                                 <ul>
                                     <li class="text">
                                         <span class="stderr">SLF4J(W): No SLF4J providers were found.&#13;<br/>SLF4J(W): Defaulting to no-operation (NOP) logger implementation&#13;<br/>SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.&#13;<br/>WARNING: A Java agent has been loaded dynamically (C:\Users\nouve\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.14.6\46e2545d7a97b6ccb195621650c5957279eb4812\byte-buddy-agent-1.14.6.jar)&#13;<br/>WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning&#13;<br/>WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information&#13;<br/>WARNING: Dynamic loading of agents will be disallowed by default in a future release&#13;<br/></span>
-                                    </li>
-                                    <li class="text">
-                                        <span class="stdout">result 1 : Success(kotlin.Unit)&#13;<br/></span>
                                     </li>
                                 </ul>
                             </li>
@@ -613,38 +610,23 @@ jQuery.cookie = function(name, value, options) {
                                 <span><em class="time">
                                         <div class="time">6 ms</div>
                                     </em><em class="status">passed</em>invoke should return failure when repository fails to delete</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">result 2 : Failure(DatabaseError)&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">114 ms</div>
+                                <div class="time">103 ms</div>
                             </em>GetSongsByCategoryUseCaseTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">102 ms</div>
+                                        <div class="time">92 ms</div>
                                     </em><em class="status">passed</em>invoke with category having songs returns list of songs</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG test result est : [Song(id=1, songbook=JEM, number=100, title=titre1, categories=[ADORATION, LOUANGE], lyrics=ceci est le chant 1, urlMedia=https://www.youtube.com/watch?v=dQw4w9WgXcQ), Song(id=2, songbook=JEM, number=200, title=titre2, categories=[LOUANGE], lyrics=cela est le chant 2, urlMedia=https://www.youtube.com/watch?v=123), Song(id=3, songbook=JEM, number=300, title=titre3, categories=[APPEL], lyrics=cela est le chant 3, urlMedia=https://www.youtube.com/watch?v=1234)]&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">7 ms</div>
+                                        <div class="time">6 ms</div>
                                     </em><em class="status">passed</em>invoke passes correct category to repository</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG test correctcategory est : slot(captured=LOUANGE)&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
@@ -655,221 +637,171 @@ jQuery.cookie = function(name, value, options) {
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">10 ms</div>
+                                <div class="time">9 ms</div>
                             </em>GetSongsByTitleUseCaseTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">6 ms</div>
+                                        <div class="time">5 ms</div>
                                     </em><em class="status">passed</em>invoke should call repository once and emit empty list when no song exists</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG test 2 result est : []&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
                                         <div class="time">4 ms</div>
                                     </em><em class="status">passed</em>invoke should call repository once and return list of songs from repository</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG test 1 result est : [Song(id=1, songbook=JEM, number=100, title=titre1, categories=[], lyrics=ceci est le chant 1, urlMedia=https://www.youtube.com/watch?v=dQw4w9WgXcQ), Song(id=2, songbook=JEM, number=200, title=titre2, categories=[], lyrics=cela est le chant 2, urlMedia=https://www.youtube.com/watch?v=123)]&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">13 ms</div>
+                                <div class="time">15 ms</div>
                             </em>GetUrlMediaUserBySongIdUseCaseTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">9 ms</div>
+                                        <div class="time">7 ms</div>
                                     </em><em class="status">passed</em>invoke should retun list of media for a  specific songid</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG result est : [UrlMediaUser(id=1, songId=1, url=https:\youtube.com\watch?v=123), UrlMediaUser(id=2, songId=1, url=https:\youtube.com\watch?v=456)]&#13;<br/>DEBUG result est : 2&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">4 ms</div>
+                                        <div class="time">8 ms</div>
                                     </em><em class="status">passed</em>invoke should call repository once and emit empty list when song does not exist</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG result est : []&#13;<br/>DEBUG result est : 0&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">10 ms</div>
+                                <div class="time">21 ms</div>
                             </em>LoadSongsFromJsonUseCaseTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">5 ms</div>
+                                        <div class="time">10 ms</div>
                                     </em><em class="status">passed</em>invoke should return failure from repository</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">5 ms</div>
+                                        <div class="time">11 ms</div>
                                     </em><em class="status">passed</em>invoke should return success when repository</span>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">8 ms</div>
+                                <div class="time">11 ms</div>
                             </em>AddUrlMediaUserUseCaseTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">5 ms</div>
+                                        <div class="time">7 ms</div>
                                     </em><em class="status">passed</em>invoke should return success when repository success</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">result 1 : Success(kotlin.Unit)&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">3 ms</div>
+                                        <div class="time">4 ms</div>
                                     </em><em class="status">passed</em>invoke should return failure when repository fails</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">result 2 : Failure(DatabaseError)&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">8 ms</div>
+                                <div class="time">7 ms</div>
                             </em>GetSongByIdUseCaseTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">4 ms</div>
+                                        <div class="time">3 ms</div>
                                     </em><em class="status">passed</em>invoke should call repository once and emit null when song does not exist</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG: r&eacute;sutlat 2 est : null&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
                                         <div class="time">4 ms</div>
                                     </em><em class="status">passed</em>invoke should return the song form repository when id is provided</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG: r&eacute;sutlat 1 est : Song(id=1, songbook=JEM, number=100, title=Dieu est grand, categories=[LOUANGE], lyrics=Test, urlMedia=)&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">461 ms</div>
+                                <div class="time">418 ms</div>
                             </em>ImportDataViewModelTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">450 ms</div>
+                                        <div class="time">406 ms</div>
                                     </em><em class="status">passed</em>importSongs success should emit Loading then Success</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">3 ms</div>
+                                        <div class="time">2 ms</div>
                                     </em><em class="status">passed</em>initial state should be Idle</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">8 ms</div>
+                                        <div class="time">10 ms</div>
                                     </em><em class="status">passed</em>importSongs network failure should emit Loading then Error</span>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">180 ms</div>
+                                <div class="time">272 ms</div>
                             </em>ListenViewModelTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">109 ms</div>
+                                        <div class="time">130 ms</div>
                                     </em><em class="status">passed</em>uiState combine song, user urls and error correctly</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG finalState est : ListenUiState(officialUrl=http://official.com, userUrls=[UrlMediaUser(id=1, songId=123, url=http://user.com)], songTitle=chant 200, isLoading=false, error=null, newUrlText=)&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">7 ms</div>
+                                        <div class="time">15 ms</div>
                                     </em><em class="status">passed</em>uiState should show error when song not found</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">10 ms</div>
+                                        <div class="time">20 ms</div>
                                     </em><em class="status">passed</em>deleteUrl should set error on failure</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">10 ms</div>
+                                        <div class="time">30 ms</div>
                                     </em><em class="status">passed</em>addUrl should clear text field on success</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">6 ms</div>
+                                        <div class="time">12 ms</div>
                                     </em><em class="status">passed</em>onNewUrlTextChange should update newUrlText in state</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">9 ms</div>
+                                        <div class="time">19 ms</div>
                                     </em><em class="status">passed</em>clearError should reset error to null</span>
-                                <ul>
-                                    <li class="text">
-                                        <span class="stdout">DEBUG stateWithError est : ListenUiState(officialUrl=http://official.com, userUrls=[UrlMediaUser(id=1, songId=123, url=http://user.com)], songTitle=chant 200, isLoading=false, error=ERROR, newUrlText=)&#13;<br/></span>
-                                    </li>
-                                </ul>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">5 ms</div>
+                                        <div class="time">11 ms</div>
                                     </em><em class="status">passed</em>addUrl should not call use case when url is blank</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">7 ms</div>
+                                        <div class="time">13 ms</div>
                                     </em><em class="status">passed</em>addUrl should call use case with correct data</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">7 ms</div>
+                                        <div class="time">13 ms</div>
                                     </em><em class="status">passed</em>addUrl should set error on failure</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">10 ms</div>
+                                        <div class="time">9 ms</div>
                                     </em><em class="status">passed</em>deleteUrl should call use case</span>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">11 ms</div>
+                                <div class="time">10 ms</div>
                             </em>SongDetailViewModelTest</span>
                         <ul>
                             <li class="level test">
@@ -879,66 +811,66 @@ jQuery.cookie = function(name, value, options) {
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">5 ms</div>
+                                        <div class="time">4 ms</div>
                                     </em><em class="status">passed</em>state should emit success when song is found</span>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">74 ms</div>
+                                <div class="time">92 ms</div>
                             </em>SongFilterViewModelTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">35 ms</div>
+                                        <div class="time">37 ms</div>
                                     </em><em class="status">passed</em>uiState should show error when use case fails</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">6 ms</div>
+                                        <div class="time">10 ms</div>
                                     </em><em class="status">passed</em>initial state should show categories without INCONNU</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">7 ms</div>
+                                        <div class="time">10 ms</div>
                                     </em><em class="status">passed</em>clearSelection should reset to initial state</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">5 ms</div>
+                                        <div class="time">7 ms</div>
                                     </em><em class="status">passed</em>selectCategory should update selectedCategory</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">6 ms</div>
+                                        <div class="time">7 ms</div>
                                     </em><em class="status">passed</em>selectCategory should show empty list when category has no songs</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">4 ms</div>
+                                        <div class="time">5 ms</div>
                                     </em><em class="status">passed</em>selectCategory should load filtered songs</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">5 ms</div>
+                                        <div class="time">7 ms</div>
                                     </em><em class="status">passed</em>selectCategory should call use case with correct category</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">6 ms</div>
+                                        <div class="time">9 ms</div>
                                     </em><em class="status">passed</em>changing category should load new songs</span>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">57 ms</div>
+                                <div class="time">63 ms</div>
                             </em>SongListViewModelTest</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">28 ms</div>
+                                        <div class="time">27 ms</div>
                                     </em><em class="status">passed</em>uiState should filter list when search query is a song lyrics</span>
                             </li>
                             <li class="level test">
@@ -948,22 +880,22 @@ jQuery.cookie = function(name, value, options) {
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">7 ms</div>
+                                        <div class="time">8 ms</div>
                                     </em><em class="status">passed</em>uiState should filter list when search query is a song number</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">5 ms</div>
+                                        <div class="time">9 ms</div>
                                     </em><em class="status">passed</em>uiState should return empty list when no match</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">4 ms</div>
+                                        <div class="time">5 ms</div>
                                     </em><em class="status">passed</em>uiState should filter list when search query is a song title</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">2 ms</div>
+                                        <div class="time">3 ms</div>
                                     </em><em class="status">passed</em>onSearchQueryChange should update searchQuery</span>
                             </li>
                             <li class="level test">
@@ -977,7 +909,7 @@ jQuery.cookie = function(name, value, options) {
             </div>
         </div>
         <div id="footer">
-            <p>Generated by Android Studio on 11/02/2026 10:41</p>
+            <p>Generated by Android Studio on 13/02/2026 08:12</p>
         </div>
     </body>
 </html>

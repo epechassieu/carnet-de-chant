@@ -37,8 +37,6 @@ class GetUrlMediaUserBySongIdUseCaseTest {
 
 
         val result = getUrlMediaUserBySongIdUseCase.invoke(songId).first()
-        println("DEBUG result est : $result")
-        println("DEBUG result est : ${result.size}")
 
         Assert.assertEquals(2, result.size)
         Assert.assertEquals("https:\\youtube.com\\watch?v=456", result[1].url)

@@ -5,7 +5,7 @@
     <string name="import_message">Le téléchargement du carnet implique que vous ou votre église est en règle avec les déclarations SACEM/SECLI. \n\nEn cliquant sur le bouton ci-dessous, vous certifiez avoir les droits nécessaires pour projeter ou imprimer ces paroles.</string>
     <string name="import_button_text">J\'accepte et je télécharge</string>"
     <string name="import_button_text_again">Réessayez</string>
-    <string name="import_error_message">Erreur : %s</string>
+    <string name="import_error_message">Erreur : %1%s</string>
     <!--mainScreen-->
     <string name="main_topbar_title">Carnet de Chant</string>
     <string name="main_bottom_bar_list">Chants</string>
@@ -23,7 +23,7 @@
     <!--SongListContent-->
     <string name="song_listcontent_outlinedeextfield_placeholder">Rechercher un chant…</string>
     <string name="song_listcontent_clear_button">Effacer la recherche</string>
-    <string name="song_listcontent_error_message">Erreur : %s</string>"
+    <string name="song_listcontent_error_message">Erreur : %1%s</string>"
     <string name="song_listcontent_empty_database">Aucun chant importé. Pensez à aller dans l\'onglet Import !</string>
     <string name="song_list_no_search_results">Aucun résultat pour cette recherche.</string>
     <string name="listen">ajout lien youtube</string>
@@ -46,7 +46,7 @@
     <string name="error_unknown">Erreur inattendue : %1$s</string>
     <string name="url_added">lien ajouté</string>
     <string name="url_deleted">l\'url est détruite</string>
-    <string name="import_success">carnet importé</string>
+    <string name="import_success">%d chants importés</string>
     <string name="error_song_not_found">chant introuvable</string>
 
 </resources>

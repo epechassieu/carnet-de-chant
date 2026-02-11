@@ -77,7 +77,7 @@ class SongRepositoryImpl @Inject constructor(
             val response = songApiService.getSongs()
 
             if (response.chants.isEmpty()) {
-                return Result.failure(AppException.FileNotFound)
+                return Result.failure(AppException.FileNotFound())
             }
 
             val entities = response.chants.map { it.toEntity() }
@@ -87,12 +87,12 @@ class SongRepositoryImpl @Inject constructor(
 
         } catch (e: Exception) {
             val appException = when (e) {
-                is UnknownHostException -> AppException.NetworkError
-                is JsonConvertException -> AppException.FileNotFound
-                is SerializationException -> AppException.FileCorrupt
+                is UnknownHostException -> AppException.NetworkError()
+                is JsonConvertException -> AppException.FileNotFound()
+                is SerializationException -> AppException.FileCorrupt()
                 is ClientRequestException -> AppException.HttpClientError(e.response.status.value)
                 is ServerResponseException -> AppException.ServerError(e.response.status.value)
-                is SQLException -> AppException.DatabaseError
+                is SQLException -> AppException.DatabaseError()
                 else -> AppException.Unknown(e.message)
             }
             Result.failure(appException)

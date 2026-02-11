@@ -42,7 +42,7 @@ class DeleteUrlMediaUserUseCaseTest {
     fun `invoke should return failure when repository fails to delete`() = runTest {
         // GIVEN
         val urlItem = UrlMediaUser(id = 1, songId = "1", url = "http://test.com")
-        val expectedError = AppException.DatabaseError
+        val expectedError = AppException.DatabaseError()
 
         coEvery { urlMediaUserRepository.deleteUrlMediaUser(urlItem) } returns Result.failure(
             expectedError

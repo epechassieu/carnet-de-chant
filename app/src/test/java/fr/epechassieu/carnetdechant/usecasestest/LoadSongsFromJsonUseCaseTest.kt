@@ -32,7 +32,7 @@ class LoadSongsFromJsonUseCaseTest {
     @Test
     fun `invoke should return failure from repository`() = runTest {
         // GIVEN
-        val networkError = AppException.NetworkError
+        val networkError = AppException.NetworkError()
         coEvery { songRepository.loadSongsFromJson() } returns Result.failure(networkError)
 
         // WHEN
