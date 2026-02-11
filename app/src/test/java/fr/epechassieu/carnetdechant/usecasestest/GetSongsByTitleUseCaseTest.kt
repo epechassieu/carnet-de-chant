@@ -1,6 +1,5 @@
 package fr.epechassieu.carnetdechant.usecasestest
 
-import android.R.attr.category
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.domain.repository.SongRepository
 import fr.epechassieu.carnetdechant.domain.usecases.GetSongsByTitleUseCase
@@ -9,14 +8,10 @@ import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.descriptors.StructureKind
 import org.junit.Assert
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -34,7 +29,7 @@ class GetSongsByTitleUseCaseTest {
         title = "titre1",
         categories = emptyList(),
         lyrics = "ceci est le chant 1",
-        urlMedia = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        urlMedia = "https://www.youtube.com/v123"
     )
     private val song2 = Song(
         "2",
@@ -43,7 +38,7 @@ class GetSongsByTitleUseCaseTest {
         title = "titre2",
         categories = emptyList(),
         lyrics = "cela est le chant 2",
-        urlMedia = "https://www.youtube.com/watch?v=123"
+        urlMedia = "https://www.youtube.com/v234"
 
     )
     private val songsList = listOf(song1, song2)
@@ -60,7 +55,6 @@ class GetSongsByTitleUseCaseTest {
 
 
         val result = getSongByTitleUseCase.invoke().first()
-        println("DEBUG test 1 result est : $result")
 
         Assert.assertEquals(songsList, result)
         verify(exactly = 1) { songRepository.getSongsByTitle() }
@@ -72,7 +66,6 @@ class GetSongsByTitleUseCaseTest {
         every { songRepository.getSongsByTitle() } returns flowOf(emptyList())
 
         val result = getSongByTitleUseCase.invoke().first()
-        println("DEBUG test 2 result est : $result")
 
         assertTrue(result.isEmpty())
         verify(exactly = 1) { songRepository.getSongsByTitle() }

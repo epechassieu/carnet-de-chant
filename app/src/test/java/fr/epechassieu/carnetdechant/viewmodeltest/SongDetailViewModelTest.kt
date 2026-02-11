@@ -39,7 +39,7 @@ class SongDetailViewModelTest {
 
     @Before
     fun setup() {
-        every { context.getString(R.string.error_song_not_found) } returns "Chant introuvable"
+        every { context.getString(R.string.error_song_not_found) } returns "song not found"
     }
 
     private fun createViewModel() =
@@ -72,7 +72,7 @@ class SongDetailViewModelTest {
             val state = expectMostRecentItem()
 
             assert(state is SongDetailUiState.Error)
-            assertEquals("Chant introuvable", (state as SongDetailUiState.Error).message)
+            assertEquals("song not found", (state as SongDetailUiState.Error).message)
         }
     }
 }

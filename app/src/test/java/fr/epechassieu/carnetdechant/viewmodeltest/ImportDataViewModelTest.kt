@@ -29,9 +29,8 @@ class ImportDataViewModelTest {
 
     @Before
     fun setup() {
-        // Préparation du context pour les messages courants
-        every { context.getString(any()) } returns "Message d'erreur"
-        every { context.getString(any(), any()) } returns "Message avec paramètres"
+        every { context.getString(any()) } returns "Error message"
+        every { context.getString(any(), any()) } returns "message with parameters"
     }
 
     private fun createViewModel() = ImportDataViewModel(songRepository, context)
@@ -46,7 +45,7 @@ class ImportDataViewModelTest {
     fun `importSongs success should emit Loading then Success`() = runTest {
         // GIVEN
         val count = 266
-        val successMessage = "266 chants importés"
+        val successMessage = "266 import songs"
         coEvery { songRepository.loadSongsFromJson() } coAnswers {
             delay(100)
             Result.success(count)
@@ -73,7 +72,7 @@ class ImportDataViewModelTest {
     @Test
     fun `importSongs network failure should emit Loading then Error`() = runTest {
         // GIVEN
-        val networkErrorMessage = "Pas de réseau"
+        val networkErrorMessage = "Error network"
         coEvery { songRepository.loadSongsFromJson() } coAnswers {
             delay(100)
             Result.failure(AppException.NetworkError)
@@ -84,7 +83,7 @@ class ImportDataViewModelTest {
 
         // THEN
         viewModel.uiState.test {
-            skipItems(1) // On saute Idle
+            skipItems(1) // slip Idle
 
             // WHEN
             viewModel.importSongs()

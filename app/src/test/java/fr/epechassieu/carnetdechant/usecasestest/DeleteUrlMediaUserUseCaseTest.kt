@@ -32,7 +32,6 @@ class DeleteUrlMediaUserUseCaseTest {
         coEvery { urlMediaUserRepository.deleteUrlMediaUser(urlItem) } returns Result.success(Unit)
 
         val result = deleteUrlMediaUserUseCase.invoke(urlItem)
-        println("result 1 : $result")
 
         assertTrue(result.isSuccess)
         coVerify(exactly = 1) { urlMediaUserRepository.deleteUrlMediaUser(urlItem) }
@@ -45,20 +44,18 @@ class DeleteUrlMediaUserUseCaseTest {
         val urlItem = UrlMediaUser(id = 1, songId = "1", url = "http://test.com")
         val expectedError = AppException.DatabaseError
 
-        // On simule un échec avec ton exception personnalisée
         coEvery { urlMediaUserRepository.deleteUrlMediaUser(urlItem) } returns Result.failure(
             expectedError
         )
 
         // WHEN
         val result = deleteUrlMediaUserUseCase.invoke(urlItem)
-        println("result 2 : $result")
 
         // THEN
-        assertTrue(result.isFailure) // On vérifie que ça a échoué
+        assertTrue(result.isFailure)
         assertEquals(
             expectedError,
             result.exceptionOrNull()
-        ) // On vérifie que c'est la bonne erreur
+        )
     }
 }
