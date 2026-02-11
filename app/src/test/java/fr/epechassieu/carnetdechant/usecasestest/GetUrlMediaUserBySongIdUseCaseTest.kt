@@ -53,8 +53,6 @@ class GetUrlMediaUserBySongIdUseCaseTest {
         every { urlMediaUserRepository.getUrlMediaUserBySongId(songId) } returns flowOf(emptyList())
 
         val result = getUrlMediaUserBySongIdUseCase.invoke(songId).first()
-        println("DEBUG result est : $result")
-        println("DEBUG result est : ${result.size}")
 
         Assert.assertEquals(0, result.size)
         verify{ urlMediaUserRepository.getUrlMediaUserBySongId(songId) }

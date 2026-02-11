@@ -101,14 +101,14 @@ class ListenViewModelTest {
     @Test
     fun `uiState should show error when song not found`() = runTest {
         every { getSongByIdUseCase(songId) } returns flowOf(null)
-        every { context.getString(R.string.error_song_not_found) } returns "Chant introuvable"
+        every { context.getString(R.string.error_song_not_found) } returns "song not found"
 
         viewModel = createViewModel()
 
         viewModel.uiState.test {
             val state = expectMostRecentItem()
 
-            assertEquals("Chant introuvable", state.error)
+            assertEquals("song not found", state.error)
             assertFalse(state.isLoading)
         }
     }
@@ -152,7 +152,7 @@ class ListenViewModelTest {
 
     @Test
     fun `addUrl should set error on failure`() = runTest {
-        val errorMessage = "Erreur base de données"
+        val errorMessage = "Error database"
         every { context.getString(R.string.error_database) } returns errorMessage
         coEvery { addUrlMediaUserUseCase(any()) } returns Result.failure(AppException.DatabaseError)
 
@@ -214,7 +214,6 @@ class ListenViewModelTest {
         // check error state
         viewModel.uiState.test {
             val stateWithError = expectMostRecentItem()
-            println("DEBUG stateWithError est : $stateWithError")
             assertEquals(errorMessage, stateWithError.error)
         }
 

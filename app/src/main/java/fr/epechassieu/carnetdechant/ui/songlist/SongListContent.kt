@@ -109,7 +109,7 @@ fun SongListContent(
                         LazyColumn {
                             items(
                                 items = state.songs,
-                                key = { it.id } // pour éviter de tout recomposer quand la liste change id et pas position
+                                key = { it.id } // compose list with id and not position
                             ) { song ->
                                 SongItem(
                                     song = song,

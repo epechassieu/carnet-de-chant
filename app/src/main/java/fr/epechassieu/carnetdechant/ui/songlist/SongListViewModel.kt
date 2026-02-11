@@ -33,11 +33,11 @@ class SongListViewModel @Inject constructor(
 
 ) : ViewModel() {
 
-    // 1. Gestion de la Recherche
+    // 1. search
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    // 2. L'État UI combiné (Liste + Recherche)
+    // 2. uiState combine (List + search)
     val uiState: StateFlow<SongListUiState> = combine<List<Song>, String,
             SongListUiState>(
         getSongsByTitleUseCase(),
@@ -54,7 +54,7 @@ class SongListViewModel @Inject constructor(
             initialValue = SongListUiState.Loading
         )
 
-    // Action pour modifier la recherche
+    // modif search
     fun onSearchQueryChange(query: String) {
         _searchQuery.value = query
     }

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
-import fr.epechassieu.carnetdechant.domain.repository.UrlMediaUserRepository
 import fr.epechassieu.carnetdechant.domain.usecases.GetSongByIdUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import fr.epechassieu.carnetdechant.domain.exception.AppException

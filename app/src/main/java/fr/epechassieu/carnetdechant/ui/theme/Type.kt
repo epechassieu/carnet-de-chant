@@ -1,9 +1,13 @@
-package fr.epechassieu.carnetdechant.ui.theme
+package com.example.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+
 import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.text.googlefonts.Font
 import fr.epechassieu.carnetdechant.R
 
 val provider = GoogleFont.Provider(
@@ -27,7 +31,7 @@ val displayFontFamily = FontFamily(
 )
 
 // Default Material 3 typography values
-private val baseline = Typography()
+val baseline = Typography()
 
 val AppTypography = Typography(
     displayLarge = baseline.displayLarge.copy(fontFamily = displayFontFamily),
@@ -46,3 +50,4 @@ val AppTypography = Typography(
     labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
     labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
 )
+

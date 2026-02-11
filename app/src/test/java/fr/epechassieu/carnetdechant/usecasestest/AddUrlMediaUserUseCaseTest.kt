@@ -33,7 +33,6 @@ class AddUrlMediaUserUseCaseTest {
         coEvery { urlMediaUserRepository.addUrlMediaUser(urlItem) } returns Result.success(Unit)
 
         val result = addUrlMediaUserUseCase.invoke(urlItem)
-        println("result 1 : $result")
 
         assertTrue(result.isSuccess)
         coVerify(exactly = 1) { urlMediaUserRepository.addUrlMediaUser(urlItem) }
@@ -46,12 +45,10 @@ class AddUrlMediaUserUseCaseTest {
         val urlItem = UrlMediaUser(id = 1, songId = "1", url = "http://test.com")
         val expectedError = AppException.DatabaseError
 
-        //  simule un échec avec  exception personnalisée
         coEvery { urlMediaUserRepository.addUrlMediaUser(urlItem) } returns Result.failure(expectedError)
 
         // WHEN
         val result = addUrlMediaUserUseCase.invoke(urlItem)
-        println("result 2 : $result")
 
         // THEN
         assertTrue(result.isFailure) // On vérifie que ça a échoué

@@ -44,7 +44,6 @@ class GetSongByIdUseCaseTest {
         every { songRepository.getSongById((id)) } returns flowOf(expectedSong)
 
         val result = getSongByIdUseCase.invoke(id).first()
-        println("DEBUG: résutlat 1 est : $result")
 
         Assert.assertEquals(expectedSong, result)
         verify(exactly = 1) { songRepository.getSongById(id) }
