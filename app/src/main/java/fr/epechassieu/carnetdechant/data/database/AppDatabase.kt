@@ -4,9 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import fr.epechassieu.carnetdechant.data.database.dao.SongDao
-import fr.epechassieu.carnetdechant.data.database.dao.UrlMediaUserDao
 import fr.epechassieu.carnetdechant.data.database.entities.SongEntity
-import fr.epechassieu.carnetdechant.data.database.entities.UrlMediaUserEntity
 
 /**
  * Main Room database configuration for the application.
@@ -15,7 +13,7 @@ import fr.epechassieu.carnetdechant.data.database.entities.UrlMediaUserEntity
  * It manages the [SongEntity] and [UrlMediaUserEntity] tables and uses [Converters] for complex data types.
  */
 @Database(
-    entities = [SongEntity::class, UrlMediaUserEntity::class],
+    entities = [SongEntity::class],
     version = 1,
     exportSchema = false
 )
@@ -24,5 +22,4 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun songDao(): SongDao
 
-    abstract fun urlMediaUserDao(): UrlMediaUserDao
 }

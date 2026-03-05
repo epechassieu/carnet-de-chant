@@ -19,6 +19,13 @@ class Converters {
     @TypeConverter
     fun toCategoryList(data: String): List<Category> {
         if (data.isBlank()) return emptyList()
-        return data.split(",").map { Category.valueOf(it) }
+        //return data.split(",").map { Category.valueOf(it) }
+        return data.split(",").mapNotNull { Category.valueOf(it.trim())
+        try {
+            Category.valueOf(it.trim())
+        } catch (e: IllegalArgumentException) {
+            null
+        }}
+
     }
 }

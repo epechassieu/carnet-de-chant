@@ -1,8 +1,5 @@
 package fr.epechassieu.carnetdechant.usecasestest
 
-import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
-import fr.epechassieu.carnetdechant.domain.repository.UrlMediaUserRepository
-import fr.epechassieu.carnetdechant.domain.usecases.GetUrlMediaUserBySongIdUseCase
 import io.mockk.clearMocks
 import io.mockk.confirmVerified
 import io.mockk.every

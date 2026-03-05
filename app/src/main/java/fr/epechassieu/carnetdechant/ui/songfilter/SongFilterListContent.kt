@@ -24,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.ui.songlist.SongItem
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
@@ -55,7 +55,7 @@ fun SongFilterListScreen(
     onSongClick: (String) -> Unit,
     viewModel: SongFilterViewModel = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     SongFilterListContent(
         state = state,
@@ -227,8 +227,7 @@ fun PreviewFilterList() {
             number = 100,
             title = "Dieu est grand",
             categories = listOf(Category.LOUANGE),
-            lyrics = "Test",
-            urlMedia = ""
+            lyrics = "Test"
         ),
         Song(
             id = "2",
@@ -236,8 +235,7 @@ fun PreviewFilterList() {
             number = 42,
             title = "Jésus t'aime",
             categories = listOf(Category.ADORATION),
-            lyrics = "Test",
-            urlMedia = ""
+            lyrics = "Test"
         )
     )
     CarnetDeChantTheme {

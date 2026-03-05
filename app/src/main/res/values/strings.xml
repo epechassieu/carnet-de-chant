@@ -12,9 +12,7 @@
     <string name="main_bottom_bar_filter">Filtres</string>
     <string name="main_bottom_bar_import">Import carnet</string>
     <!--SongDetailScreen -->
-    <string name="song_detail_loading">Chargement...</string>
-    <string name="song_detail_error">Chant introuvable</string>
-    <string name="song_detail_button_text">Ecouter le chant</string>"
+    "
     <!-- all -->
     <string name="song_backclic">Retour</string>
     <!--SongFilterListContent-->
@@ -26,17 +24,7 @@
     <string name="song_listcontent_error_message">Erreur : %1%s</string>"
     <string name="song_listcontent_empty_database">Aucun chant importé. Pensez à aller dans l\'onglet Import !</string>
     <string name="song_list_no_search_results">Aucun résultat pour cette recherche.</string>
-    <string name="listen">ajout lien youtube</string>
-    <string name="loading">Chargement</string>
-<!--listen -->
-    <string name="listen_official_link">Lien du carnet</string>
-    <string name="listen_my_links">Mes liens</string>
-    <string name="listen_no_personal_links">Aucun lien personnel ajouté.</string>
-    <string name="listen_add_placeholder">Coller un lien YouTube, Spotify...</string>
-    <string name="delete">Supprimer</string>
-    <string name="song_detail_add_audio">Ajouter un audio</string>
-    <string name="error_link_open">Impossible d\'ouvrir le lien</string>
-    <string name="error_empty_list">le serveur renvoie une liste vide ou non json</string>
+    <!--listen -->
     <!--error song repository impl -->
     <string name="error_network">Pas de connexion Internet. Vérifiez votre réseau.</string>
     <string name="error_file_not_found">Fichier introuvable ou lien cassé.</string>
@@ -44,8 +32,6 @@
     <string name="error_server_unavailable">Serveur indisponible (Erreur %1$d).</string> <string name="error_http_client">Fichier introuvable (Erreur %1$d).</string>
     <string name="error_database">Erreur de sauvegarde sur le téléphone.</string>
     <string name="error_unknown">Erreur inattendue : %1$s</string>
-    <string name="url_added">lien ajouté</string>
-    <string name="url_deleted">l\'url est détruite</string>
     <string name="import_success">%d chants importés</string>
     <string name="error_song_not_found">chant introuvable</string>
 

@@ -7,11 +7,14 @@ import io.ktor.serialization.JsonConvertException
 import fr.epechassieu.carnetdechant.data.database.dao.SongDao
 import fr.epechassieu.carnetdechant.data.mapper.toDomain
 import fr.epechassieu.carnetdechant.data.mapper.toEntity
+import fr.epechassieu.carnetdechant.data.remote.AudioApiService
 import fr.epechassieu.carnetdechant.data.remote.SongApiService
+import fr.epechassieu.carnetdechant.di.IoDispatcher
 import fr.epechassieu.carnetdechant.domain.exception.AppException
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.domain.repository.SongRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
@@ -32,24 +35,26 @@ import javax.inject.Inject
  */
 class SongRepositoryImpl @Inject constructor(
     private val songDao: SongDao,
-    private val songApiService: SongApiService
+    private val songApiService: SongApiService,
+    private val audioApiService: AudioApiService,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : SongRepository {
 
     override fun getSongsByTitle(): Flow<List<Song>> {
         return songDao.getSongsByTitle().map { entities ->
-            entities.map { it.toDomain() }
+            entities.map { it.toDomain(audioApiService) }
         }
     }
 
     override fun getSongsByCategory(category: Category): Flow<List<Song>> {
         return songDao.getSongsByCategory(category.name).map { entities ->
-            entities.map { it.toDomain() }
+            entities.map { it.toDomain(audioApiService) }
         }
     }
 
     override fun getSongById(id: String): Flow<Song?> {
         return songDao.getSongById(id).map { entity ->
-            entity?.toDomain()
+            entity?.toDomain(audioApiService)
         }
     }
 
@@ -81,7 +86,8 @@ class SongRepositoryImpl @Inject constructor(
             }
 
             val entities = response.chants.map { it.toEntity() }
-            songDao.insertAll(entities)
+            songDao.replaceAllSongs(entities)  // use atomic update
+
 
             Result.success(entities.size)
 

@@ -7,12 +7,12 @@ sealed class AppException : Exception() {
     // imports
     class FileNotFound : AppException()
     class FileCorrupt : AppException()
-    data class HttpClientError(val code: Int) : Exception()
-    data class ServerError(val code: Int) : Exception()
+    data class HttpClientError(val code: Int) : AppException()
+    data class ServerError(val code: Int) : AppException()
 
     //database
     class DatabaseError : AppException()
 
     //unknown
-    data class Unknown(override val message: String?) : Exception()
+    data class Unknown(override val message: String?) : AppException()
 }

@@ -46,10 +46,22 @@ class ImportDataViewModel @Inject constructor(
                         is AppException.NetworkError -> context.getString(R.string.error_network)
                         is AppException.FileNotFound -> context.getString(R.string.error_file_not_found)
                         is AppException.FileCorrupt -> context.getString(R.string.error_file_corrupt)
-                        is AppException.HttpClientError -> context.getString(R.string.error_http_client, error.code)
-                        is AppException.ServerError -> context.getString(R.string.error_server_unavailable, error.code)
+                        is AppException.HttpClientError -> context.getString(
+                            R.string.error_http_client,
+                            error.code
+                        )
+
+                        is AppException.ServerError -> context.getString(
+                            R.string.error_server_unavailable,
+                            error.code
+                        )
+
                         is AppException.DatabaseError -> context.getString(R.string.error_database)
-                        is AppException.Unknown -> context.getString(R.string.error_unknown, error.message ?: "")
+                        is AppException.Unknown -> context.getString(
+                            R.string.error_unknown,
+                            error.message ?: ""
+                        )
+
                         else -> context.getString(R.string.error_unknown, "")
                     }
                     _uiState.value = ImportDataUiState.Error(message)

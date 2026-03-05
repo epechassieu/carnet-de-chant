@@ -1,6 +1,7 @@
 package fr.epechassieu.carnetdechant.data.mapper
 
 import fr.epechassieu.carnetdechant.data.database.entities.SongEntity
+import fr.epechassieu.carnetdechant.data.remote.AudioApiService
 import fr.epechassieu.carnetdechant.data.remote.SongDto
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
@@ -13,7 +14,7 @@ import fr.epechassieu.carnetdechant.domain.model.Song
  *
  * @return A [Song] instance containing the data from the entity.
  */
-fun SongEntity.toDomain(): Song {
+fun SongEntity.toDomain(audioApiService: AudioApiService): Song {
     return Song(
         id = id,
         songbook = songbook,
@@ -31,7 +32,8 @@ fun SongEntity.toDomain(): Song {
             }
         },
         lyrics = lyrics,
-        urlMedia = urlMedia
+        audio = audio,
+        audioUrl = audio?.let { audioApiService.getAudioUrl(it) }
     )
 }
 
@@ -48,7 +50,7 @@ fun Song.toEntity(): SongEntity {
         title = title,
         categories = categories.joinToString(",") { it.name },
         lyrics = lyrics,
-        urlMedia = urlMedia
+        audio = audio
     )
 }
 
@@ -65,6 +67,6 @@ fun SongDto.toEntity(): SongEntity {
         title = titre,
         categories = categories.joinToString(","),
         lyrics = paroles,
-        urlMedia = urlmedia
+        audio = audio
     )
 }

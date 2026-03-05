@@ -1,5 +1,6 @@
 package fr.epechassieu.carnetdechant.data.remote
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,7 +14,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SongsResponseDto(
     val version: String,
-    val dateGeneration: String,
+    @SerialName("derniere_mise_a_jour")
+    val derniereMiseAJour: String,
+    @SerialName("nombre_chants")
     val nombreChants: Int,
     val chants: List<SongDto>
 )
@@ -37,5 +40,5 @@ data class SongDto(
     val titre: String,
     val categories: List<String>,
     val paroles: String,
-    val urlmedia: String? = null
+    val audio: String? = null
 )

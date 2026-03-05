@@ -9,7 +9,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import fr.epechassieu.carnetdechant.data.database.AppDatabase
 import fr.epechassieu.carnetdechant.data.database.dao.SongDao
-import fr.epechassieu.carnetdechant.data.database.dao.UrlMediaUserDao
 import javax.inject.Singleton
 
 
@@ -45,15 +44,5 @@ object DatabaseModule {
         return appDatabase.songDao()
     }
 
-    /**
-     * Provides the [UrlMediaUserDao] instance to be used for database operations related to média.
-     *
-     * @param appDatabase The [AppDatabase] instance from which the DAO is retrieved.
-     * @return The [UrlMediaUserDao] used for accessing url data.
-     */
-    @Provides
-    @Singleton
-    fun provideUrlMediaUserDao(appDatabase: AppDatabase): UrlMediaUserDao {
-        return appDatabase.urlMediaUserDao()
-    }
+
 }

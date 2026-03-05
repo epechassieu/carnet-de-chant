@@ -16,7 +16,7 @@ room = "2.8.4"
 hilt = "2.57.2"
 hiltNavigationCompose = "1.3.0"
 #Serialization
-kotlinxSerialization = "1.6.0"
+kotlinxSerialization = "1.8.0"
 #Ktor
 ktor = "3.1.3"
 #Ksp
@@ -28,6 +28,10 @@ material3 = "1.4.0"
 mockk = "1.13.9"
 kotlinxCoroutinesTest = "1.7.3"
 turbine = "1.0.0"
+#audio
+media3="1.9.2"
+runtime = "1.10.4"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +52,10 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
+# Media
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+media3-session = { module = "androidx.media3:media3-session", version.ref = "media3" }
+media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
 
 # Navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
@@ -87,6 +95,7 @@ mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "moc
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

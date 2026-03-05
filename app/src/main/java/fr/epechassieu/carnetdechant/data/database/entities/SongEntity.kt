@@ -37,6 +37,6 @@ data class SongEntity(
     @ColumnInfo(name = "paroles")
     val lyrics: String,
 
-    @ColumnInfo(name = "url_media")
-    val urlMedia: String?
+    @ColumnInfo(name = "audio")
+    val audio: String?
 )

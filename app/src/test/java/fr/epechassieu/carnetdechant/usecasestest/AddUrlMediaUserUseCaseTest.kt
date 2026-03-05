@@ -1,9 +1,6 @@
 package fr.epechassieu.carnetdechant.usecasestest.usecaseTest
 
 import fr.epechassieu.carnetdechant.domain.exception.AppException
-import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
-import fr.epechassieu.carnetdechant.domain.repository.UrlMediaUserRepository
-import fr.epechassieu.carnetdechant.domain.usecases.AddUrlMediaUserUseCase
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify

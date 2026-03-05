@@ -4,6 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import fr.epechassieu.carnetdechant.data.remote.AudioApiService
+import fr.epechassieu.carnetdechant.data.remote.SongApiService
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -38,5 +40,16 @@ object NetworkModule {
                 register(ContentType.Application.Json, KotlinxSerializationConverter(jsonConfig))
             }
         }
+    }
+    @Provides
+    @Singleton
+    fun provideSongApiService(httpClient: HttpClient): SongApiService {
+        return SongApiService(httpClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAudioApiService(httpClient: HttpClient): AudioApiService {
+        return AudioApiService(httpClient)
     }
 }

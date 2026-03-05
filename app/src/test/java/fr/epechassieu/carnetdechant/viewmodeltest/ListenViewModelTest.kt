@@ -6,11 +6,7 @@ import app.cash.turbine.test
 import fr.epechassieu.carnetdechant.domain.exception.AppException
 import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Song
-import fr.epechassieu.carnetdechant.domain.model.UrlMediaUser
-import fr.epechassieu.carnetdechant.domain.usecases.AddUrlMediaUserUseCase
-import fr.epechassieu.carnetdechant.domain.usecases.DeleteUrlMediaUserUseCase
 import fr.epechassieu.carnetdechant.domain.usecases.GetSongByIdUseCase
-import fr.epechassieu.carnetdechant.domain.usecases.GetUrlMediaUserBySongIdUseCase
 import fr.epechassieu.carnetdechant.ui.listen.ListenViewModel
 import fr.epechassieu.carnetdechant.util.MainDispatcherRule
 import io.mockk.coEvery

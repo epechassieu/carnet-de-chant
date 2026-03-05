@@ -18,5 +18,6 @@ data class Song(
     val title: String,
     val categories: List<Category>,
     val lyrics: String,
-    val urlMedia: String? = null
+    val audio: String? = null,
+    val audioUrl: String? = null
 )

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -41,7 +42,7 @@ class SongListViewModel @Inject constructor(
     val uiState: StateFlow<SongListUiState> = combine<List<Song>, String,
             SongListUiState>(
         getSongsByTitleUseCase(),
-        _searchQuery
+        _searchQuery.debounce(200)
     ) { songs, query ->
         SongListUiState.Success(filterSongs(songs, query))
     }

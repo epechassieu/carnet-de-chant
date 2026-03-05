@@ -82,13 +82,12 @@ fun SongItemPreview() {
             number = 100,
             title = "Dieu est grand",
             categories = listOf(Category.LOUANGE),
-            lyrics = "Test",
-            urlMedia = ""
+            lyrics = "Test"
         ),
         Song(
             id = "2", songbook = "ATG", number = 42, title = "Jésus t'aime", categories = listOf(
                 Category.ADORATION
-            ), lyrics = "Test", urlMedia = ""
+            ), lyrics = "Test"
         )
     )
     CarnetDeChantTheme {

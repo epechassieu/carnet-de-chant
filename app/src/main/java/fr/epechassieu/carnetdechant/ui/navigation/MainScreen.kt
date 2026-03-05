@@ -1,6 +1,7 @@
 package fr.epechassieu.carnetdechant.ui.navigation
 
 import androidx.compose.foundation.layout.padding
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Download
@@ -16,25 +17,28 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import fr.epechassieu.carnetdechant.ui.importdata.ImportDataViewModel
 import fr.epechassieu.carnetdechant.ui.importdata.ImportScreen
 import fr.epechassieu.carnetdechant.ui.songlist.SongListContent
 import fr.epechassieu.carnetdechant.ui.songlist.SongListViewModel
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.ui.importdata.ImportDataUiState
-import fr.epechassieu.carnetdechant.ui.listen.ListenScreen
 import fr.epechassieu.carnetdechant.ui.songdetail.SongDetailScreen
 import fr.epechassieu.carnetdechant.ui.songfilter.SongFilterListScreen
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
@@ -55,11 +59,19 @@ import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+
+    // recuperation de la destination actuelle
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentDestination = navBackStackEntry?.destination
 
-    val showBars = currentRoute in listOf(Routes.LIST, Routes.IMPORT)
+    // détermine si on affiche les barres
+    val showBars = currentDestination?.hierarchy?.any { destination ->
+        destination.hasRoute(SongListRoute::class) ||
+                destination.hasRoute(FilterRoute::class) ||
+                destination.hasRoute(ImportRoute::class)
+    } ?: false
 
+    // --- Scaffold ---
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -78,33 +90,36 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 NavigationBarItem(
                     icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Liste") },
                     label = { Text(text = stringResource(R.string.main_bottom_bar_list)) },
-                    selected = currentRoute == Routes.LIST,
+                    selected = currentDestination?.hasRoute(SongListRoute::class)==true,
                     onClick = {
-                        navController.navigate(Routes.LIST) {
-                            popUpTo(Routes.LIST) { inclusive = true }
+                        navController.navigate(SongListRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {saveState = false }
                             launchSingleTop = true
+                            restoreState=false
                         }
                     }
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.FilterAlt, contentDescription = "Filtres") },
                     label = { Text(text = stringResource(R.string.main_bottom_bar_filter)) },
-                    selected = currentRoute == Routes.FILTER,
+                    selected = currentDestination?.hasRoute(FilterRoute::class)==true,
                     onClick = {
-                        navController.navigate(Routes.FILTER) {
-                            popUpTo(Routes.LIST)
+                        navController.navigate(FilterRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {saveState = false }
                             launchSingleTop = true
+                            restoreState=false
                         }
                     }
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.Download, contentDescription = "Import") },
                     label = { Text(text = stringResource(R.string.main_bottom_bar_import)) },
-                    selected = currentRoute == Routes.IMPORT,
+                    selected = currentDestination?.hasRoute(ImportRoute::class)==true,
                     onClick = {
-                        navController.navigate(Routes.IMPORT) {
-                            popUpTo(Routes.LIST)
+                        navController.navigate(ImportRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {saveState = false }
                             launchSingleTop = true
+                            restoreState=false
                         }
                     }
                 )
@@ -112,62 +127,56 @@ fun MainScreen(modifier: Modifier = Modifier) {
         }
     ) { innerPadding ->
         NavHost(
-            navController = navController,
-            startDestination = Routes.LIST,
-            modifier = Modifier.padding(innerPadding)
-        ) {
+             navController = navController,
+             startDestination = SongListRoute,
+             modifier = Modifier.padding(innerPadding)
+         ) {
 
-            composable(Routes.LIST) {
-                val viewModel: SongListViewModel = hiltViewModel()
-                val state by viewModel.uiState.collectAsState()
-                val query by viewModel.searchQuery.collectAsState()
+             composable<SongListRoute>{
+                 val viewModel: SongListViewModel = hiltViewModel()
+                 val state by viewModel.uiState.collectAsStateWithLifecycle()
+                 val query by viewModel.searchQuery.collectAsStateWithLifecycle()
 
-                SongListContent(
-                    state = state,
-                    searchQuery = query,
-                    onSearchQueryChange = viewModel::onSearchQueryChange,
-                    onSongClick = { songId ->
-                        navController.navigate(Routes.details(songId))
-                    }
-                )
-            }
+                 SongListContent(
+                     state = state,
+                     searchQuery = query,
+                     onSearchQueryChange = viewModel::onSearchQueryChange,
+                     onSongClick = { songId ->
+                         navController.navigate(SongDetailRoute(songId))
+                     }
+                 )
+             }
 
-            composable(
-                route = Routes.DETAILS,
-                arguments = listOf(navArgument("songId") { type = NavType.StringType })
-            ) {
-                SongDetailScreen(
-                    onBackClick = { navController.popBackStack() },
-                    onListenClick = { songId ->
-                        navController.navigate(Routes.listen(songId))
-                    }
-                )
-            }
+             composable<SongDetailRoute> { backStackEntry ->
+                 // Récupération des arguments de manière type-safe
+                 val route = backStackEntry.toRoute<SongDetailRoute>()
 
-            composable(
-                route = Routes.LISTEN,
-                arguments = listOf(navArgument("songId") { type = NavType.StringType })
-            ) {
-                ListenScreen(
-                    onBackClick = { navController.popBackStack() }
-                )
-            }
+                 SongDetailScreen(
+                     songId = route.songId,
+                     onBackClick = { navController.popBackStack() },
+/*                     onListenClick = { songId ->
+                         navController.navigate(ListenRoute(songId))
+                     }*/
+                 )
+             }
 
-            composable(Routes.FILTER) {
+            composable<FilterRoute> {
                 SongFilterListScreen(
                     onSongClick = { songId ->
-                        navController.navigate(Routes.details(songId))
+                        navController.navigate(SongDetailRoute(songId))
                     }
                 )
             }
-
-            composable(Routes.IMPORT) {
+            composable<ImportRoute> {
                 val viewModel: ImportDataViewModel = hiltViewModel()
-                val importState by viewModel.uiState.collectAsState()
+                val importState by viewModel.uiState.collectAsStateWithLifecycle()
 
+                // Navigation automatique après succès
                 LaunchedEffect(importState) {
                     if (importState is ImportDataUiState.Success) {
-                        navController.navigate(Routes.LIST)
+                        navController.navigate(SongListRoute) {
+                            popUpTo(ImportRoute) { inclusive = true }
+                        }
                     }
                 }
 
@@ -180,7 +189,9 @@ fun MainScreen(modifier: Modifier = Modifier) {
     }
 }
 
+
 @Preview(showSystemUi = true, showBackground = true)
+
 @Composable
 fun MainScreenPreview() {
     CarnetDeChantTheme {

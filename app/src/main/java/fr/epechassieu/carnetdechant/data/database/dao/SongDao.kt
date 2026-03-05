@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import fr.epechassieu.carnetdechant.data.database.entities.SongEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -38,5 +39,14 @@ interface SongDao {
     @Query("SELECT COUNT(*) FROM songs")
     suspend fun getSongsCount(): Int
 
+    // deleting
+    @Query("DELETE FROM songs")
+    suspend fun deleteAll()
 
+    // atomic update
+    @Transaction
+    suspend fun replaceAllSongs(songs: List<SongEntity>) {
+        deleteAll()
+        insertAll(songs)
+    }
 }
