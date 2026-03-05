@@ -29,7 +29,7 @@ class GetSongsByTitleUseCaseTest {
         title = "titre1",
         categories = emptyList(),
         lyrics = "ceci est le chant 1",
-        urlMedia = "https://www.youtube.com/v123"
+        audio = "https://www.youtube.com/v123"
     )
     private val song2 = Song(
         "2",
@@ -38,7 +38,7 @@ class GetSongsByTitleUseCaseTest {
         title = "titre2",
         categories = emptyList(),
         lyrics = "cela est le chant 2",
-        urlMedia = "https://www.youtube.com/v234"
+        audio = "https://www.youtube.com/v234"
 
     )
     private val songsList = listOf(song1, song2)

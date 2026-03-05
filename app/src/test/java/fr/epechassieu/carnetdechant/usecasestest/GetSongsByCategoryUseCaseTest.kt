@@ -30,7 +30,7 @@ class GetSongsByCategoryUseCaseTest {
         title = "titre1",
         categories = listOf(Category.ADORATION, Category.LOUANGE),
         lyrics = "ceci est le chant 1",
-        urlMedia = "https://www.youtube.com/v123"
+        audio = "https://www.youtube.com/v123"
     )
     private val song2 = Song(
         "2",
@@ -39,7 +39,7 @@ class GetSongsByCategoryUseCaseTest {
         title = "titre2",
         categories = listOf(Category.LOUANGE),
         lyrics = "cela est le chant 2",
-        urlMedia = "https://www.youtube.com/v234"
+        audio = "https://www.youtube.com/v234"
     )
     private val song3 = Song(
         "3",
@@ -48,7 +48,7 @@ class GetSongsByCategoryUseCaseTest {
         title = "titre3",
         categories = listOf(Category.APPEL),
         lyrics = "cela est le chant 3",
-        urlMedia = "https://www.youtube.com/v345"
+        audio = "https://www.youtube.com/v345"
     )
     private val songsList = listOf(song1, song2,song3)
 

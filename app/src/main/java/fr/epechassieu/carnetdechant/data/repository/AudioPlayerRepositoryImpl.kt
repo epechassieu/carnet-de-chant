@@ -15,13 +15,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
+import android.os.Handler
+import android.os.Looper
 
 @Singleton
 class AudioPlayerRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : AudioPlayerRepository {
 
-    private val player: ExoPlayer = ExoPlayer.Builder(context).build()
+    private var player: ExoPlayer? = null
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private val _isPlaying = MutableStateFlow(false)
     private val _currentPosition = MutableStateFlow(0L)
@@ -35,54 +38,87 @@ class AudioPlayerRepositoryImpl @Inject constructor(
     override val buffering = _buffering.asStateFlow()
     override val error = _error.asStateFlow()
 
-    init {
-        player.addListener(object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                _isPlaying.value = isPlaying
-            }
-
-            override fun onPlaybackStateChanged(state: Int) {
-                _buffering.value = (state == Player.STATE_BUFFERING)
-                if (state == Player.STATE_READY) {
-                    _duration.value = player.duration.coerceAtLeast(0L)
+    private val positionRunnable = object : Runnable {
+        override fun run() {
+            player?.let {
+                if (it.isPlaying) {
+                    _currentPosition.value = it.currentPosition
                 }
             }
-
-            override fun onPlayerError(error: PlaybackException) {
-                _error.value = "Erreur lecture: ${error.message}"
-            }
-        })
-
-        // Mise à jour position
-        CoroutineScope(Dispatchers.Main).launch {
-            while (true) {
-                if (player.isPlaying) {
-                    _currentPosition.value = player.currentPosition
-                }
-                delay(100)
-            }
+            mainHandler.postDelayed(this, 100)
         }
     }
 
-    override fun prepare(audioUrl: String) {
-        val mediaItem = MediaItem.fromUri(audioUrl)
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        _error.value = null
+    private fun getOrCreatePlayer(): ExoPlayer {
+        if (player == null) {
+            player = ExoPlayer.Builder(context).build().apply {
+                addListener(object : Player.Listener {
+                    override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        android.util.Log.d("AUDIO", "onIsPlayingChanged: $isPlaying")
+                        _isPlaying.value = isPlaying
+                    }
+
+                    override fun onPlaybackStateChanged(state: Int) {
+                        android.util.Log.d("AUDIO", "onPlaybackStateChanged: $state")
+                        _buffering.value = (state == Player.STATE_BUFFERING)
+                        if (state == Player.STATE_READY) {
+                            _duration.value = duration.coerceAtLeast(0L)
+                            android.util.Log.d("AUDIO", "Duration set to: ${_duration.value}")
+                        }
+                    }
+
+                    override fun onPlayerError(error: PlaybackException) {
+                        android.util.Log.e("AUDIO", "Player error: ${error.message}")
+                        _error.value = "Erreur lecture: ${error.message}"
+                    }
+                })
+            }
+            mainHandler.post(positionRunnable)
+        }
+        return player!!
     }
 
-    override fun play() = player.play()
-    override fun pause() = player.pause()
+    override fun prepare(audioUrl: String) {
+        android.util.Log.d("AUDIO", "prepare() called with URL: $audioUrl")
+
+        _currentPosition.value = 0L
+        _duration.value = 0L
+        _isPlaying.value = false
+        _buffering.value = false
+        _error.value = null
+
+        val p = getOrCreatePlayer()
+        p.clearMediaItems()
+        p.setMediaItem(MediaItem.fromUri(audioUrl))
+        p.prepare()
+
+        android.util.Log.d("AUDIO", "Player state after prepare: ${p.playbackState}")
+    }
+
+    override fun play() {
+        player?.play()
+    }
+
+    override fun pause() {
+        player?.pause()
+    }
+
     override fun stop() {
-        player.stop()
-        player.seekTo(0)
+        player?.let {
+            it.pause()
+            it.seekTo(0)
+        }
+        _currentPosition.value = 0L
+        _isPlaying.value = false
     }
 
     override fun seekTo(position: Long) {
-        player.seekTo(position)
+        player?.seekTo(position)
     }
 
     override fun release() {
-        player.release()
+        mainHandler.removeCallbacks(positionRunnable)
+        player?.release()
+        player = null
     }
 }

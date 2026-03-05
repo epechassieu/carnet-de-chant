@@ -38,7 +38,7 @@ class GetSongByIdUseCaseTest {
             title = "Dieu est grand",
             categories = listOf(Category.LOUANGE),
             lyrics = "Test",
-            urlMedia = ""
+            audio = ""
         )
 
         every { songRepository.getSongById((id)) } returns flowOf(expectedSong)

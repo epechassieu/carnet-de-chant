@@ -40,7 +40,7 @@ class SongFilterViewModelTest {
         title = "Chant de louange",
         categories = listOf(Category.LOUANGE),
         lyrics = "Paroles louange",
-        urlMedia = ""
+        audio = ""
     )
     private val song2 = Song(
         id = "2",
@@ -49,7 +49,7 @@ class SongFilterViewModelTest {
         title = "Chant d'adoration",
         categories = listOf(Category.ADORATION),
         lyrics = "Paroles adoration",
-        urlMedia = ""
+        audio = ""
     )
     private val louangeSongs = listOf(song1)
     private val adorationSongs = listOf(song2)
