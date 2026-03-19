@@ -85,8 +85,7 @@ fun SongListContent(
 
         // -- items --
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxSize()
         ) {
             when (state) {
                 is SongListUiState.Loading -> {
