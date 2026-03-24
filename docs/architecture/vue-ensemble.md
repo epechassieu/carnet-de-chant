@@ -4,11 +4,11 @@
 ```mermaid
 info
 
-``
+```
 
 
 ```mermaid
-graph TB;
+graph GR;
     UI["UI Layer<br/>(Jetpack Compose)"];
     VM["ViewModel Layer<br/>(State Management)"];
     REPO["Repository Layer<br/>(Data Abstraction)"];
