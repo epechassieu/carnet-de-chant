@@ -1,0 +1,36 @@
+site_name: Carnet de Chants - Documentation
+site_description: Application de gestion de cantiques pour église protestante Evangélique de Chassieu
+repo_url: https://github.com/yourusername/carnet-de-chants
+repo_name: Carnet de Chants
+
+theme:
+  name: material
+  language: fr
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - search.suggest
+
+plugins:
+  - search
+  - mermaid2
+
+nav:
+  - Accueil: index.md
+  - Architecture:
+      - Vue d'ensemble: architecture/vue-ensemble.md
+      - Clean Architecture: architecture/clean-arch.md
+      - Base de données: architecture/database.md
+      - Gestion audio: architecture/audio.md
+  - Installation:
+      - Setup: setup/installation.md
+      - Dépendances: setup/dependances.md
+  - Décisions techniques:
+      - ADR-001 YouTube → MP3: decisions/adr-001-youtube-to-mp3.md
+      - ADR-002 Handler Threading: decisions/adr-002-handler-threading.md
+      - ADR-003 MediaPlayer → Media3: decisions/adr-003-mediaplayer-to-media3.md
