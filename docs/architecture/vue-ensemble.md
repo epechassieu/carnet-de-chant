@@ -24,3 +24,4 @@ graph TB
     style REPO fill:#ede7f6
     style DB fill:#fff3e0
     style API fill:#e8f5e9
+```
