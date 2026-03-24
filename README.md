@@ -8,8 +8,8 @@ La documentation complète se trouve ici: [carnet-de-chant.readthedocs.io](https
 
 ## 🚀 Démarrage rapide
 ```bash
-git clone https://github.com/epechassieu/carnet-de-chants.git
-cd carnet-de-chants/app
+git clone https://github.com/epechassieu/carnet-de-chant.git
+cd carnet-de-chant/app
 ./gradlew build
 ```
 
@@ -21,16 +21,9 @@ cd carnet-de-chants/app
 - **Audio**: Media3
 - **Networking**: Ktor
 
-Voir [docs/architecture/](docs/architecture/) pour détails.
-
-## 📋 Dépendances
-
-Voir [docs/setup/dependances.md](docs/setup/dependances.md)
-
 ## 🤝 Contribution
 
 Utilisé par église protestante évangélique de Chassieu
 
 ---
 
-**Documentation**: http://localhost:8000 (en dev)
