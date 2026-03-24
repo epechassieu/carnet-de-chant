@@ -12,7 +12,7 @@ Après migration vers MP3, l'app crashait lors de la lecture audio sur certains 
 E/AndroidRuntime: FATAL EXCEPTION: main
     android.media.MediaPlayer cannot be released during playback
     ...
-    at HymnPlayerViewModel.playAudio(HymnPlayerViewModel.kt:45)
+    at SongPlayerViewModel.playAudio(SongPlayerViewModel.kt:45)
 ```
 
 ### Root cause:
@@ -84,41 +84,107 @@ Coroutine = peut être délayée par scheduler
 ## Implementation complète
 
 ```kotlin
-class AudioPlayer @Inject constructor(
-    context: Context
-) {
-    private var mediaPlayer: MediaPlayer? = null
-    
-    // ✅ Pattern clé
+class AudioPlayerRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context
+) : AudioPlayerRepository {
+
+    private var player: ExoPlayer? = null
     private val mainHandler = Handler(Looper.getMainLooper())
-    
-    fun playAudio(url: String) {
-        mainHandler.post {
-            stopAudio() // Nettoyer d'abord
-            
-            mediaPlayer = MediaPlayer().apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .build()
-                )
-                setDataSource(url)
-                setOnPreparedListener { mp ->
-                    mp.start()
+
+    private val _isPlaying = MutableStateFlow(false)
+    private val _currentPosition = MutableStateFlow(0L)
+    private val _duration = MutableStateFlow(0L)
+    private val _buffering = MutableStateFlow(false)
+    private val _error = MutableStateFlow<String?>(null)
+
+    override val isPlaying = _isPlaying.asStateFlow()
+    override val currentPosition = _currentPosition.asStateFlow()
+    override val duration = _duration.asStateFlow()
+    override val buffering = _buffering.asStateFlow()
+    override val error = _error.asStateFlow()
+
+    private val positionRunnable = object : Runnable {
+        override fun run() {
+            player?.let {
+                if (it.isPlaying) {
+                    _currentPosition.value = it.currentPosition
                 }
-                prepareAsync()
             }
+            mainHandler.postDelayed(this, 100)
         }
     }
-    
-    fun stopAudio() {
-        mainHandler.post {
-            mediaPlayer?.apply {
-                if (isPlaying) stop()
-                release()
+
+    private fun getOrCreatePlayer(): ExoPlayer {
+        if (player == null) {
+            player = ExoPlayer.Builder(context).build().apply {
+                addListener(object : Player.Listener {
+                    override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        android.util.Log.d("AUDIO", "onIsPlayingChanged: $isPlaying")
+                        _isPlaying.value = isPlaying
+                    }
+
+                    override fun onPlaybackStateChanged(state: Int) {
+                        android.util.Log.d("AUDIO", "onPlaybackStateChanged: $state")
+                        _buffering.value = (state == Player.STATE_BUFFERING)
+                        if (state == Player.STATE_READY) {
+                            _duration.value = duration.coerceAtLeast(0L)
+                            android.util.Log.d("AUDIO", "Duration set to: ${_duration.value}")
+                        }
+                    }
+
+                    override fun onPlayerError(error: PlaybackException) {
+                        android.util.Log.e("AUDIO", "Player error: ${error.message}")
+                        _error.value = "Erreur lecture: ${error.message}"
+                    }
+                })
             }
-            mediaPlayer = null
+            mainHandler.post(positionRunnable)
         }
+        return player!!
+    }
+
+    override fun prepare(audioUrl: String) {
+        android.util.Log.d("AUDIO", "prepare() called with URL: $audioUrl")
+
+        _currentPosition.value = 0L
+        _duration.value = 0L
+        _isPlaying.value = false
+        _buffering.value = false
+        _error.value = null
+
+        val p = getOrCreatePlayer()
+        p.clearMediaItems()
+        p.setMediaItem(MediaItem.fromUri(audioUrl))
+        p.prepare()
+
+        android.util.Log.d("AUDIO", "Player state after prepare: ${p.playbackState}")
+    }
+
+    override fun play() {
+        player?.play()
+    }
+
+    override fun pause() {
+        player?.pause()
+    }
+
+    override fun stop() {
+        player?.let {
+            it.pause()
+            it.seekTo(0)
+        }
+        _currentPosition.value = 0L
+        _isPlaying.value = false
+    }
+
+    override fun seekTo(position: Long) {
+        player?.seekTo(position)
+    }
+
+    override fun release() {
+        mainHandler.removeCallbacks(positionRunnable)
+        player?.release()
+        player = null
     }
 }
 ```
@@ -132,25 +198,6 @@ class AudioPlayer @Inject constructor(
 | `runOnUiThread()` | ✅ Simple | ❌ Activité-dépendant | Rejeté |
 | `GlobalScope.launch` | ❌ Anti-pattern | ❌ Memory leak | **Interdit** |
 
-## Tests
-
-```kotlin
-@get:Rule
-val instantExecutorRule = InstantTaskExecutorRule()
-
-@Test
-fun testAudioPlaybackThreadSafety() {
-    val audioPlayer = AudioPlayer(context)
-    
-    // Simule appel depuis background thread
-    Thread {
-        audioPlayer.playAudio("https://example.com/hymn.mp3")
-    }.start()
-    
-    // Vérifie sur main thread
-    assertTrue(audioPlayer.isPlaying())
-}
-```
 
 ## Consequences
 

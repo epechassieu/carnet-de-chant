@@ -37,21 +37,13 @@ cdn.example.com/hymns/
 "audioUrl": "https://cdn.example.com/hymns/001-hymn.mp3"
 ```
 
-**Conversion batch**:
-```bash
-# Script Python pour convertir tous les MP3s
-for file in *.wav; do
-    ffmpeg -i "$file" -ab 128k "${file%.wav}.mp3"
-done
-```
-
 ## Consequences
 
 ### ✅ Avantages
 - Mode offline total après premier chargement
 - Contrôle qualité audio
 - Pas de limitations API
-- Coût serveur prévisible (~5€/mois)
+- Coût serveur prévisible
 
 ### ⚠️ Challenges
 - Gestion bande passante (+200 MB initial)
@@ -70,21 +62,6 @@ done
 
 ## Implementation
 
-**Repository pattern**:
-```kotlin
-class HymnRepository @Inject constructor(
-    private val dao: HymnDao
-) : HymnDataSource {
-    
-    suspend fun loadHymn(id: Int): Hymn {
-        // Repository abstrait la source
-        // On peut changer URL MP3 sans impacter UI
-        return dao.getById(id)
-            ?.toDomain()
-            ?: throw HymnNotFoundException(id)
-    }
-}
-```
 
 L'abstraction Repository permet de changer les URLs sans refonte app.
 
