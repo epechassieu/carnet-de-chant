@@ -3,12 +3,10 @@
 ## Stack technique
 ```mermaid
 info
-
 ```
 
-
 ```mermaid
-graph GR;
+graph TB;
     UI["UI Layer<br/>(Jetpack Compose)"];
     VM["ViewModel Layer<br/>(State Management)"];
     REPO["Repository Layer<br/>(Data Abstraction)"];
