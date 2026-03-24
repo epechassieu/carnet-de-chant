@@ -3,14 +3,14 @@
 ## Stack technique
 
 ```mermaid
-graph TB
-    UI["UI Layer<br/>(Jetpack Compose)"]
-    VM["ViewModel Layer<br/>(State Management)"]
-    REPO["Repository Layer<br/>(Data Abstraction)"]
-    DAO["Room DAO<br/>(Database Access)"]
-    REMOTE["Remote Service<br/>(Ktor Client)"]
-    DB[(("Room Database<br/>(SQLite)"))]
-    API["📱 MP3 Server"]
+graph TB;
+    UI["UI Layer<br/>(Jetpack Compose)"];
+    VM["ViewModel Layer<br/>(State Management)"];
+    REPO["Repository Layer<br/>(Data Abstraction)"];
+    DAO["Room DAO<br/>(Database Access)"];
+    REMOTE["Remote Service<br/>(Ktor Client)"];
+    DB[(("Room Database<br/>(SQLite)"))];
+    API["📱 MP3 Server"];
     
     UI -->|Observes State| VM
     VM -->|Requests Data| REPO
