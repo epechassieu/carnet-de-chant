@@ -4,7 +4,7 @@ Application Android de gestion de cantiques pour églises protestantes.
 
 ## 📚 Documentation
 
-La documentation complète se trouve ici: [carnet-de-chant.readthedocs.io](https://epechassieu.github.io/carnet-de-chant/)
+La documentation complète se trouve ici: [carnet-de-chant.readthedocs.io](https://epechassieu.github.io/carnet-de-chant/docs/)
 
 ## 🚀 Démarrage rapide
 ```bash
