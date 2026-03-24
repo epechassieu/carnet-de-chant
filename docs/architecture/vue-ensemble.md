@@ -1,9 +1,6 @@
 # Architecture - Vue d'ensemble
 
 ## Stack technique
-```mermaid
-info
-```
 
 ```mermaid
 graph TB;
