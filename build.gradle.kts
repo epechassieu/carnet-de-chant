@@ -5,4 +5,12 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt.android) apply false
+id( "org.sonarqube" ) version "7.3.1.8318"
+}
+
+sonar {
+  propriétés {
+    property( "sonar.projectKey" , "epechassieu_carnet-de-chant" )
+    propriété( "sonar.organisation" , "epechassieu" )
+  }
 }
