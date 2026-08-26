@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "carnet de chant"
+rootProject.name = "carnet de chants"
 include(":app")
  

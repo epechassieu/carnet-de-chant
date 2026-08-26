@@ -35,8 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import fr.epechassieu.carnetdechant.ui.importdata.ImportDataViewModel
 import fr.epechassieu.carnetdechant.ui.importdata.ImportScreen
-import fr.epechassieu.carnetdechant.ui.songlist.SongListContent
-import fr.epechassieu.carnetdechant.ui.songlist.SongListViewModel
+import fr.epechassieu.carnetdechant.ui.songlist.SongListScreen
 import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.ui.importdata.ImportDataUiState
 import fr.epechassieu.carnetdechant.ui.songdetail.SongDetailScreen
@@ -133,14 +132,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
          ) {
 
              composable<SongListRoute>{
-                 val viewModel: SongListViewModel = hiltViewModel()
-                 val state by viewModel.uiState.collectAsStateWithLifecycle()
-                 val query by viewModel.searchQuery.collectAsStateWithLifecycle()
-
-                 SongListContent(
-                     state = state,
-                     searchQuery = query,
-                     onSearchQueryChange = viewModel::onSearchQueryChange,
+                 SongListScreen(
                      onSongClick = { songId ->
                          navController.navigate(SongDetailRoute(songId))
                      }

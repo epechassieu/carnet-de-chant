@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">carnet de chant</string>
+    <string name="app_name">carnet de chants</string>
     <!--importDataScreen-->
     <string name="import_title">Droits d\auteur &amp; SACEM</string>
     <string name="import_message">Le téléchargement du carnet implique que vous ou votre église est en règle avec les déclarations SACEM/SECLI. \n\nEn cliquant sur le bouton ci-dessous, vous certifiez avoir les droits nécessaires pour projeter ou imprimer ces paroles.</string>
@@ -7,7 +7,7 @@
     <string name="import_button_text_again">Réessayez</string>
     <string name="import_error_message">Erreur : %1%s</string>
     <!--mainScreen-->
-    <string name="main_topbar_title">Carnet de Chant</string>
+    <string name="main_topbar_title">Carnet de Chants</string>
     <string name="main_bottom_bar_list">Chants</string>
     <string name="main_bottom_bar_filter">Filtres</string>
     <string name="main_bottom_bar_import">Import carnet</string>

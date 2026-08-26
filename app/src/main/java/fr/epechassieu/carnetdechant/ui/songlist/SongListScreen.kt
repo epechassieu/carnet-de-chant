@@ -26,16 +26,43 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
+
+/**
+ * Main entry point for the song list screen.
+ *
+ * This composable connects the [SongListViewModel] to the [SongListContent] UI.
+ *
+ * @param onSongClick Callback invoked when a specific song is selected, passing the song's ID.
+ * @param viewModel The ViewModel handling the business logic and UI state for the song list.
+ */
+@Composable
+fun SongListScreen(
+    onSongClick: (String) -> Unit,
+    viewModel: SongListViewModel = hiltViewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val query by viewModel.searchQuery.collectAsStateWithLifecycle()
+
+    SongListContent(
+        state = state,
+        searchQuery = query,
+        onSearchQueryChange = viewModel::onSearchQueryChange,
+        onSongClick = onSongClick
+    )
+}
 
 /**
  * A Composable that displays the main content of the song list screen.

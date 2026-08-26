@@ -14,7 +14,7 @@
 
 ## Objectif
 
-Carnet de Chants est une application permettant aux églises protestantes utilisant le carent de chants de l'église EPECHASSIEU de:
+Carnet de Chants est une application permettant aux églises protestantes utilisant le carnet de chants de l'église EPECHASSIEU de:
 - 📱 Consulter les cantiques sur mobile
 - 🎵 Écouter l'accompagnement musical
 - 🔍 Chercher par titre, numéro ou paroles
