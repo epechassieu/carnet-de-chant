@@ -24,6 +24,7 @@ nav:
   - Accueil: index.md
   - Architecture:
       - Vue d'ensemble: architecture/vue-ensemble.md
+      - Navigation: architecture/navigation.md
       - Clean Architecture: architecture/clean-arch.md
       - Base de données: architecture/database.md
       - Gestion audio: architecture/audio.md
