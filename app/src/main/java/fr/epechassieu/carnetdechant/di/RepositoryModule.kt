@@ -5,8 +5,10 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import fr.epechassieu.carnetdechant.data.repository.AudioPlayerRepositoryImpl
+import fr.epechassieu.carnetdechant.data.repository.SettingsRepositoryImpl
 import fr.epechassieu.carnetdechant.data.repository.SongRepositoryImpl
 import fr.epechassieu.carnetdechant.domain.repository.AudioPlayerRepository
+import fr.epechassieu.carnetdechant.domain.repository.SettingsRepository
 import fr.epechassieu.carnetdechant.domain.repository.SongRepository
 import javax.inject.Singleton
 
@@ -24,6 +26,12 @@ abstract class RepositoryModule {
     abstract fun bindSongRepository(
         songRepositoryImpl: SongRepositoryImpl
     ): SongRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(
+        settingsRepositoryImpl: SettingsRepositoryImpl
+    ): SettingsRepository
 
 }
 

@@ -10,6 +10,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -260,6 +261,7 @@ fun CarnetDeChantTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
+    fontScale: Float = 1f,
     content: @Composable() () -> Unit
 ) {
   val colorScheme = when {
@@ -267,15 +269,51 @@ fun CarnetDeChantTheme(
           val context = LocalContext.current
           if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
       }
-      
+
       darkTheme -> darkScheme
       else -> lightScheme
   }
 
   MaterialTheme(
     colorScheme = colorScheme,
-    typography = AppTypography,
+    typography = rememberScaledTypography(fontScale),
     content = content
   )
+}
+
+/**
+ * Scales every [AppTypography] text style by [fontScale], preserving the ratio
+ * between font size and line height so the layout stays well-proportioned.
+ */
+@Composable
+private fun rememberScaledTypography(fontScale: Float): Typography {
+    return remember(fontScale) {
+        if (fontScale == 1f) {
+            AppTypography
+        } else {
+            Typography(
+                displayLarge = AppTypography.displayLarge.scaled(fontScale),
+                displayMedium = AppTypography.displayMedium.scaled(fontScale),
+                displaySmall = AppTypography.displaySmall.scaled(fontScale),
+                headlineLarge = AppTypography.headlineLarge.scaled(fontScale),
+                headlineMedium = AppTypography.headlineMedium.scaled(fontScale),
+                headlineSmall = AppTypography.headlineSmall.scaled(fontScale),
+                titleLarge = AppTypography.titleLarge.scaled(fontScale),
+                titleMedium = AppTypography.titleMedium.scaled(fontScale),
+                titleSmall = AppTypography.titleSmall.scaled(fontScale),
+                bodyLarge = AppTypography.bodyLarge.scaled(fontScale),
+                bodyMedium = AppTypography.bodyMedium.scaled(fontScale),
+                bodySmall = AppTypography.bodySmall.scaled(fontScale),
+                labelLarge = AppTypography.labelLarge.scaled(fontScale),
+                labelMedium = AppTypography.labelMedium.scaled(fontScale),
+                labelSmall = AppTypography.labelSmall.scaled(fontScale),
+            )
+        }
+    }
+}
+
+private fun androidx.compose.ui.text.TextStyle.scaled(factor: Float): androidx.compose.ui.text.TextStyle {
+    val scaledLineHeight = if (lineHeight.isSp) lineHeight * factor else lineHeight
+    return copy(fontSize = fontSize * factor, lineHeight = scaledLineHeight)
 }
 

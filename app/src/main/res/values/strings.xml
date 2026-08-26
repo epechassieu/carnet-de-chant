@@ -11,6 +11,11 @@
     <string name="main_bottom_bar_list">Chants</string>
     <string name="main_bottom_bar_filter">Filtres</string>
     <string name="main_bottom_bar_import">Import carnet</string>
+    <string name="main_text_size_menu">Taille du texte</string>
+    <string name="main_text_size_small">Petit</string>
+    <string name="main_text_size_normal">Normal</string>
+    <string name="main_text_size_large">Grand</string>
+    <string name="main_text_size_extra_large">Très grand</string>
     <!--SongDetailScreen -->
     "
     <!-- all -->

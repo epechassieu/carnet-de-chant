@@ -104,6 +104,9 @@ dependencies {
     // Fonts
     implementation(libs.androidx.ui.text.google.fonts)
 
+    // DataStore (préférences utilisateur)
+    implementation(libs.androidx.datastore.preferences)
+
     // Tests Unit
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
