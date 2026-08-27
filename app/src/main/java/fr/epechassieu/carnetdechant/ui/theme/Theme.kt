@@ -1,5 +1,6 @@
 package fr.epechassieu.carnetdechant.ui.theme
 import android.app.Activity
+import android.app.UiModeManager
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,8 +10,12 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -264,7 +269,17 @@ fun CarnetDeChantTheme(
     fontScale: Float = 1f,
     content: @Composable() () -> Unit
 ) {
+  val systemContrast = rememberSystemContrastLevel()
+
   val colorScheme = when {
+      // Le contraste "élevé"/"moyen" choisi dans les réglages d'accessibilité
+      // du téléphone prime sur la couleur dynamique et le thème par défaut.
+      systemContrast >= HIGH_CONTRAST_THRESHOLD ->
+          if (darkTheme) highContrastDarkColorScheme else highContrastLightColorScheme
+
+      systemContrast >= MEDIUM_CONTRAST_THRESHOLD ->
+          if (darkTheme) mediumContrastDarkColorScheme else mediumContrastLightColorScheme
+
       dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
           val context = LocalContext.current
           if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
@@ -279,6 +294,35 @@ fun CarnetDeChantTheme(
     typography = rememberScaledTypography(fontScale),
     content = content
   )
+}
+
+private const val MEDIUM_CONTRAST_THRESHOLD = 0.33f
+private const val HIGH_CONTRAST_THRESHOLD = 0.67f
+
+/**
+ * Lit le niveau de contraste choisi par l'utilisateur dans les réglages d'accessibilité
+ * du système (Réglages > Accessibilité > Contraste, Android 14+) et reste à jour si
+ * l'utilisateur le change pendant que l'app est ouverte. Retourne 0 (contraste standard)
+ * sur les versions d'Android antérieures qui n'exposent pas ce réglage.
+ */
+@Composable
+private fun rememberSystemContrastLevel(): Float {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) return 0f
+
+    val context = LocalContext.current
+    val uiModeManager = remember(context) {
+        context.getSystemService(UiModeManager::class.java)
+    } ?: return 0f
+
+    var contrast by remember { mutableFloatStateOf(uiModeManager.contrast) }
+
+    DisposableEffect(uiModeManager) {
+        val listener = UiModeManager.ContrastChangeListener { newContrast -> contrast = newContrast }
+        uiModeManager.addContrastChangeListener(context.mainExecutor, listener)
+        onDispose { uiModeManager.removeContrastChangeListener(listener) }
+    }
+
+    return contrast
 }
 
 /**
