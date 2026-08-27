@@ -68,6 +68,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fr.epechassieu.carnetdechant.R
 import fr.epechassieu.carnetdechant.domain.model.Category
 import fr.epechassieu.carnetdechant.domain.model.Song
+import fr.epechassieu.carnetdechant.domain.model.TextSize
+import fr.epechassieu.carnetdechant.ui.settings.TextSizeMenu
 import fr.epechassieu.carnetdechant.ui.theme.CarnetDeChantTheme
 import fr.epechassieu.carnetdechant.ui.songdetail.PlayerState
 import fr.epechassieu.carnetdechant.ui.songdetail.SongDetailUiState
@@ -90,6 +92,8 @@ import fr.epechassieu.carnetdechant.ui.songdetail.SongDetailViewModel
 fun SongDetailScreen(
     songId: String,
     onBackClick: () -> Unit,
+    textSize: TextSize = TextSize.Default,
+    onTextSizeChange: (TextSize) -> Unit = {},
     viewModel: SongDetailViewModel = hiltViewModel()
 ) {
 
@@ -104,6 +108,8 @@ fun SongDetailScreen(
         uiState = uiState,
         playerState = playerState,  // Passer le state
         onBackClick = onBackClick,
+        textSize = textSize,
+        onTextSizeChange = onTextSizeChange,
         onPrepareAudio = { song -> viewModel.prepareAudio(song) },
         onTogglePlayPause = { viewModel.togglePlayPause() },
         onSeek = { viewModel.seekTo(it) },
@@ -131,6 +137,8 @@ fun SongDetailContent(
     uiState: SongDetailUiState,
     playerState: PlayerState,
     onBackClick: () -> Unit,
+    textSize: TextSize = TextSize.Default,
+    onTextSizeChange: (TextSize) -> Unit = {},
     onPrepareAudio: (Song) -> Unit,
     onTogglePlayPause: () -> Unit,
     onSeek: (Long) -> Unit,
@@ -165,6 +173,12 @@ fun SongDetailContent(
                             contentDescription = "Retour"
                         )
                     }
+                },
+                actions = {
+                    TextSizeMenu(
+                        currentTextSize = textSize,
+                        onTextSizeChange = onTextSizeChange
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
