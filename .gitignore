@@ -17,4 +17,10 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Signature de l'application - ne jamais committer
+/keystore/
+keystore.properties
+*.jks
+*.keystore
 local.properties
